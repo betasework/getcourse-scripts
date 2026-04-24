@@ -220,6 +220,16 @@
         line-height:1.35;
       }
 
+      #${ROOT_ID} .hero-insights{
+        display:grid;
+        gap:8px;
+      }
+
+      #${ROOT_ID} .hero-insight-title{
+        font-size:13px;
+        line-height:1.25;
+      }
+
       #${ROOT_ID} .metrics{
         display:grid;
         grid-template-columns:repeat(4,minmax(0,1fr));
@@ -469,6 +479,31 @@
     };
   }
 
+  function buildTopInsights(model) {
+    const items = [];
+
+    if (model.largestDrop.value < 0) {
+      items.push({
+        title: "Провал в связке уроков",
+        text: `Максимальная просадка ${formatInt(Math.abs(model.largestDrop.value))} чел. между «${trimLabel(model.largestDrop.fromTitle, 36)}» и «${trimLabel(model.largestDrop.title, 36)}».`
+      });
+    }
+
+    const lowAnswer = model.rows
+      .filter((r) => r.answerRate !== null && r.answerRate < 70)
+      .sort((a, b) => a.answerRate - b.answerRate)
+      .slice(0, 2);
+
+    if (lowAnswer.length) {
+      items.push({
+        title: "Низкая вовлеченность в задания",
+        text: lowAnswer.map((r) => `«${trimLabel(r.title, 32)}» (${r.answerRate}%)`).join(", ")
+      });
+    }
+
+    return items;
+  }
+
   function renderRoot(sourceTable, model) {
     let root = document.getElementById(ROOT_ID);
     const parent = sourceTable.parentNode;
@@ -490,6 +525,7 @@
     root._model = model;
 
     const metricItems = buildMetricItems(model);
+    const topInsights = buildTopInsights(model);
 
     root.innerHTML = `
       <div class="page">
@@ -515,6 +551,17 @@
               <div class="hero-mini"><strong>${model.startAnswerRate === null ? "—" : `${model.startAnswerRate}%`}</strong><span>ответили на старте</span></div>
               <div class="hero-mini"><strong>${model.finalAnswerRate === null ? "—" : `${model.finalAnswerRate}%`}</strong><span>ответили в финале</span></div>
             </div>
+
+            ${topInsights.length ? `
+              <div class="hero-insights">
+                ${topInsights.map((it) => `
+                  <div class="hero-mini">
+                    <strong class="hero-insight-title">${escapeHtml(it.title)}</strong>
+                    <span>${escapeHtml(it.text)}</span>
+                  </div>
+                `).join("")}
+              </div>
+            ` : ""}
           </aside>
         </section>
 
@@ -608,10 +655,24 @@
   }
 
   function getSignal(row) {
-    if (row.answered === null) return { className: "warn", label: "Нет задания" };
-    if (row.delta !== null && row.delta <= -30) return { className: "bad", label: "Проверить переход" };
-    if (row.delta !== null && row.delta <= -15) return { className: "warn", label: "Наблюдать" };
-    if (row.answerRate !== null && row.answerRate < 70) return { className: "warn", label: "Падает вовлечение" };
+    if (row.answered === null) {
+      return { className: "warn", label: "Нет задания" };
+    }
+
+    if (row.delta !== null && row.delta <= -30) {
+      return { className: "bad", label: "Проверить переход" };
+    }
+    if (row.delta !== null && row.delta <= -15) {
+      return { className: "warn", label: "Наблюдать" };
+    }
+
+    if (row.answerRate !== null && row.answerRate < 70) {
+      if (row.delta === null || row.delta < 0) {
+        return { className: "warn", label: "Падает вовлечение" };
+      }
+      return { className: "good", label: "Прирост / стабильно" };
+    }
+
     return { className: "good", label: "Стабильно" };
   }
 
