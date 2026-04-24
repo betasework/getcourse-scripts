@@ -165,14 +165,18 @@
 
   function renderRoot(sourceTable, model) {
     let root = document.getElementById(ROOT_ID);
-    const insertBeforeNode = sourceTable;
 
     if (!root) {
       root = document.createElement("section");
       root.id = ROOT_ID;
-      insertBeforeNode.parentNode.insertBefore(root, insertBeforeNode);
-    } else if (root.nextSibling !== insertBeforeNode) {
-      insertBeforeNode.parentNode.insertBefore(root, insertBeforeNode);
+      // Вставляем после таблицы, а не перед ней
+      const parent = sourceTable.parentNode;
+      const next = sourceTable.nextSibling;
+      if (next) {
+        parent.insertBefore(root, next);
+      } else {
+        parent.appendChild(root);
+      }
     }
 
     root.dataset.bound = "0";
