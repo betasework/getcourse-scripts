@@ -91,7 +91,6 @@
       #${ROOT_ID}{
         --bg:#f5f2ea;
         --panel:rgba(255,252,246,.92);
-        --panelStrong:#fffdf8;
         --ink:#11224f;
         --muted:#5f6780;
         --line:rgba(17,34,79,.12);
@@ -106,10 +105,7 @@
         font-family:"Avenir Next","Segoe UI",Arial,sans-serif;
       }
 
-      #${ROOT_ID} *,
-      #${ROOT_ID} *::before,
-      #${ROOT_ID} *::after { box-sizing:border-box; }
-
+      #${ROOT_ID} *, #${ROOT_ID} *::before, #${ROOT_ID} *::after { box-sizing:border-box; }
       #${ROOT_ID} h1,#${ROOT_ID} h2,#${ROOT_ID} h3,#${ROOT_ID} p { margin:0; }
 
       #${ROOT_ID} .page{
@@ -220,15 +216,8 @@
         line-height:1.35;
       }
 
-      #${ROOT_ID} .hero-insights{
-        display:grid;
-        gap:8px;
-      }
-
-      #${ROOT_ID} .hero-insight-title{
-        font-size:13px;
-        line-height:1.25;
-      }
+      #${ROOT_ID} .hero-insights{ display:grid; gap:8px; }
+      #${ROOT_ID} .hero-insight-title{ font-size:13px; line-height:1.25; }
 
       #${ROOT_ID} .metrics{
         display:grid;
@@ -308,6 +297,7 @@
       #${ROOT_ID} .good{ background:rgba(21,127,85,.12); color:var(--green); }
       #${ROOT_ID} .warn{ background:rgba(184,107,0,.12); color:var(--amber); }
       #${ROOT_ID} .bad{ background:rgba(196,69,54,.12); color:var(--rose); }
+      #${ROOT_ID} .up{ background:rgba(44,99,255,.14); color:var(--blue); }
       #${ROOT_ID} .muted{ color:var(--muted); }
 
       #${ROOT_ID} .btn{
@@ -655,22 +645,16 @@
   }
 
   function getSignal(row) {
-    if (row.answered === null) {
-      return { className: "warn", label: "Нет задания" };
-    }
-
-    if (row.delta !== null && row.delta <= -30) {
-      return { className: "bad", label: "Проверить переход" };
-    }
-    if (row.delta !== null && row.delta <= -15) {
-      return { className: "warn", label: "Наблюдать" };
-    }
+    if (row.answered === null) return { className: "warn", label: "Нет задания" };
+    if (row.delta !== null && row.delta > 0) return { className: "up", label: "Прирост" };
+    if (row.delta !== null && row.delta <= -30) return { className: "bad", label: "Проверить переход" };
+    if (row.delta !== null && row.delta <= -15) return { className: "warn", label: "Наблюдать" };
 
     if (row.answerRate !== null && row.answerRate < 70) {
       if (row.delta === null || row.delta < 0) {
         return { className: "warn", label: "Падает вовлечение" };
       }
-      return { className: "good", label: "Прирост / стабильно" };
+      return { className: "good", label: "Стабильно" };
     }
 
     return { className: "good", label: "Стабильно" };
