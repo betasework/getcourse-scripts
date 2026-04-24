@@ -234,13 +234,12 @@
 
       #${ROOT_ID} .layout{
         display:grid;
-        grid-template-columns:1.45fr .95fr;
+        grid-template-columns:1fr;
         gap:16px;
         margin-bottom:16px;
       }
 
-      #${ROOT_ID} .chart-card,
-      #${ROOT_ID} .insights-card { padding:16px; }
+      #${ROOT_ID} .chart-card { padding:16px; }
 
       #${ROOT_ID} .card-head{
         display:flex;
@@ -265,40 +264,6 @@
       }
 
       #${ROOT_ID} svg{ width:100%; height:auto; display:block; }
-
-      #${ROOT_ID} .insight-list{ display:grid; gap:10px; }
-      #${ROOT_ID} .insight{
-        padding:12px 14px;
-        border-radius:14px;
-        background:var(--panelStrong);
-        border:1px solid rgba(17,34,79,.07);
-      }
-
-      #${ROOT_ID} .insight strong{ display:block; font-size:14px; margin-bottom:6px; }
-      #${ROOT_ID} .insight p{ color:var(--muted); font-size:13px; line-height:1.45; }
-
-      #${ROOT_ID} .scoreboard{ display:grid; gap:10px; margin-top:12px; }
-      #${ROOT_ID} .score-row{
-        display:grid;
-        grid-template-columns:140px 1fr 64px;
-        gap:10px;
-        align-items:center;
-      }
-
-      #${ROOT_ID} .score-row b{ font-size:12px; }
-      #${ROOT_ID} .bar{
-        height:8px;
-        border-radius:999px;
-        background:rgba(17,34,79,.08);
-        overflow:hidden;
-      }
-
-      #${ROOT_ID} .bar span{
-        display:block;
-        height:100%;
-        border-radius:inherit;
-        background:linear-gradient(90deg,var(--blue),#78a2ff);
-      }
 
       #${ROOT_ID} .table-card{ padding:16px; }
       #${ROOT_ID} table{ width:100%; border-collapse:collapse; }
@@ -347,8 +312,7 @@
       }
 
       @media (max-width:1120px){
-        #${ROOT_ID} .hero,
-        #${ROOT_ID} .layout { grid-template-columns:1fr; }
+        #${ROOT_ID} .hero { grid-template-columns:1fr; }
         #${ROOT_ID} .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
       }
 
@@ -357,14 +321,11 @@
         #${ROOT_ID} .hero-main,
         #${ROOT_ID} .hero-side,
         #${ROOT_ID} .chart-card,
-        #${ROOT_ID} .insights-card,
         #${ROOT_ID} .table-card,
         #${ROOT_ID} .metric { padding:14px; }
 
         #${ROOT_ID} .hero-grid,
         #${ROOT_ID} .metrics { grid-template-columns:1fr; }
-
-        #${ROOT_ID} .score-row{ grid-template-columns:120px 1fr 56px; }
       }
     `;
     document.head.appendChild(style);
@@ -529,7 +490,6 @@
     root._model = model;
 
     const metricItems = buildMetricItems(model);
-    const scoreboardItems = buildScoreboardItems(model);
 
     root.innerHTML = `
       <div class="page">
@@ -581,23 +541,6 @@
               <svg id="${APP_ID}-chart" viewBox="0 0 980 430" aria-label="Воронка уроков"></svg>
             </div>
           </article>
-
-          <aside class="panel insights-card">
-            <div class="card-head">
-              <div>
-                <h2 class="card-title">Что добавить на страницу</h2>
-                <p class="card-subtitle">Короткие действия по слабым местам воронки.</p>
-              </div>
-            </div>
-
-            <div class="insight-list">
-              ${buildInsights(model).map(renderInsight).join("")}
-            </div>
-
-            <div class="scoreboard">
-              ${scoreboardItems.map(renderScoreRow).join("")}
-            </div>
-          </aside>
         </section>
 
         <section class="panel table-card">
@@ -640,41 +583,6 @@
 
   function renderMetricCard(item) {
     return `<article class="panel metric"><p class="metric-label">${item.label}</p><h3 class="metric-value">${item.value}</h3><p class="metric-note">${item.note}</p></article>`;
-  }
-
-  function buildScoreboardItems(model) {
-    return [
-      { label: "Дошли до финала", value: clamp(model.completionRate, 0, 100), display: `${model.completionRate}%` },
-      { label: "Ответили на старте", value: clamp(model.startAnswerRate || 0, 0, 100), display: model.startAnswerRate === null ? "—" : `${model.startAnswerRate}%` },
-      { label: "Ответили в конце", value: clamp(model.finalAnswerRate || 0, 0, 100), display: model.finalAnswerRate === null ? "—" : `${model.finalAnswerRate}%` },
-      { label: "Средний урок", value: clamp(model.averageLessonShare || 0, 0, 100), display: `${model.averageLessonShare}%` }
-    ];
-  }
-
-  function renderScoreRow(item) {
-    return `<div class="score-row"><b>${item.label}</b><div class="bar"><span style="width:${item.value}%"></span></div><div>${item.display}</div></div>`;
-  }
-
-  function buildInsights(model) {
-    const insights = [];
-
-    if (model.largestDrop.value < 0) {
-      insights.push({ title: "Провал в связке уроков", text: `Максимальная просадка ${formatInt(Math.abs(model.largestDrop.value))} чел. между «${trimLabel(model.largestDrop.fromTitle, 36)}» и «${trimLabel(model.largestDrop.title, 36)}».` });
-    }
-
-    const lowAnswer = model.rows.filter((r) => r.answerRate !== null && r.answerRate < 70).slice(0, 2);
-    if (lowAnswer.length) {
-      insights.push({ title: "Низкая вовлеченность в задания", text: lowAnswer.map((r) => `«${trimLabel(r.title, 28)}» (${r.answerRate}%)`).join(", ") });
-    }
-
-    insights.push({ title: "Кому писать в первую очередь", text: "Соберите учеников, которые зашли, но не ответили, на проблемных уроках и сделайте догрев." });
-    insights.push({ title: "Следующий шаг", text: "Экспортируйте CSV и сегментируйте людей по неответившим и застрявшим на переходах." });
-
-    return insights.slice(0, 4);
-  }
-
-  function renderInsight(item) {
-    return `<section class="insight"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.text)}</p></section>`;
   }
 
   function renderLessonRow(row, index) {
@@ -840,7 +748,6 @@
 
   function roundUp(value, step) { return Math.ceil(value / step) * step; }
   function roundDown(value, step) { return Math.floor(value / step) * step; }
-  function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
 
   function indexOfHeader(headerColumns, title) {
     const hit = headerColumns.find((cell) => normalizeText(cell.text) === title);
