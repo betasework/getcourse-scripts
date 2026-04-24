@@ -1,33 +1,58 @@
 (function () {
   "use strict";
 
-  // Запускаем только на странице статистики потока
   if (!/\/teach\/control\/stream\/stat\/id\//.test(location.pathname)) return;
 
   const APP_ID = "gc-stat-upgrade";
   const ROOT_ID = `${APP_ID}-root`;
   const STYLE_ID = `${APP_ID}-style`;
+  const INTERNAL_TABLE_ID = `${APP_ID}-internal-table`;
+  const STATE_KEY = "__gcStatUpgradeState";
 
-  let initializedForTable = null;
-  let observer = null;
+  // Убиваем предыдущий инстанс (если bookmarklet нажали еще раз)
+  try {
+    if (window[STATE_KEY] && typeof window[STATE_KEY].destroy === "function") {
+      window[STATE_KEY].destroy();
+    }
+  } catch (_) {}
+
+  const state = {
+    observer: null,
+    timer: null,
+    initializedForTable: null
+  };
+  window[STATE_KEY] = state;
+
+  function destroy() {
+    if (state.observer) {
+      state.observer.disconnect();
+      state.observer = null;
+    }
+    if (state.timer) {
+      clearInterval(state.timer);
+      state.timer = null;
+    }
+    const oldRoot = document.getElementById(ROOT_ID);
+    if (oldRoot) oldRoot.remove();
+  }
+  state.destroy = destroy;
 
   function init() {
     injectStyles();
     tryRender();
 
-    if (!observer) {
-      observer = new MutationObserver(() => {
-        if (initializedForTable) return;
-        tryRender();
-      });
-      observer.observe(document.body, { childList: true, subtree: true });
-    }
+    state.observer = new MutationObserver(() => {
+      if (state.initializedForTable) return;
+      tryRender();
+    });
+    state.observer.observe(document.body, { childList: true, subtree: true });
 
     let attempts = 0;
-    const timer = setInterval(() => {
+    state.timer = setInterval(() => {
       attempts += 1;
-      if (initializedForTable || attempts > 40) {
-        clearInterval(timer);
+      if (state.initializedForTable || attempts > 40) {
+        clearInterval(state.timer);
+        state.timer = null;
         return;
       }
       tryRender();
@@ -43,12 +68,17 @@
 
     renderRoot(sourceTable, model);
     bindRoot(model);
-    sourceTable.style.display = "none";
-    initializedForTable = sourceTable;
 
-    if (observer) {
-      observer.disconnect();
-      observer = null;
+    sourceTable.style.display = "none";
+    state.initializedForTable = sourceTable;
+
+    if (state.observer) {
+      state.observer.disconnect();
+      state.observer = null;
+    }
+    if (state.timer) {
+      clearInterval(state.timer);
+      state.timer = null;
     }
   }
 
@@ -57,39 +87,49 @@
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
-      #${ROOT_ID} { margin:16px 0 24px; font-family:Arial,sans-serif; color:#1b2a4a; }
-      #${ROOT_ID} * { box-sizing:border-box; }
-      #${ROOT_ID} .wrap { background:#f6f7fb; border:1px solid #e4e7ef; border-radius:14px; padding:16px; }
-      #${ROOT_ID} .kpi { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:14px; }
-      #${ROOT_ID} .card { background:#fff; border:1px solid #e6e9f1; border-radius:10px; padding:10px 12px; }
-      #${ROOT_ID} .label { font-size:12px; color:#5a6783; margin-bottom:4px; }
-      #${ROOT_ID} .val { font-size:24px; font-weight:700; line-height:1; }
-      #${ROOT_ID} .chart { background:#fff; border:1px solid #e6e9f1; border-radius:10px; padding:10px; margin-bottom:14px; }
-      #${ROOT_ID} svg { width:100%; height:auto; display:block; }
-      #${ROOT_ID} .head { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:8px; }
-      #${ROOT_ID} .btn { border:1px solid #d3d8e5; background:#fff; border-radius:999px; padding:8px 12px; cursor:pointer; font-size:12px; }
-      #${ROOT_ID} table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #e6e9f1; border-radius:10px; overflow:hidden; }
-      #${ROOT_ID} th, #${ROOT_ID} td { padding:10px; border-bottom:1px solid #edf0f6; text-align:left; font-size:13px; }
-      #${ROOT_ID} th { font-size:11px; text-transform:uppercase; color:#5a6783; letter-spacing:.04em; }
-      #${ROOT_ID} .good { color:#157f55; font-weight:700; }
-      #${ROOT_ID} .warn { color:#b86b00; font-weight:700; }
-      #${ROOT_ID} .bad  { color:#c44536; font-weight:700; }
-      @media (max-width:900px){ #${ROOT_ID} .kpi{grid-template-columns:repeat(2,minmax(0,1fr));} }
-      @media (max-width:560px){ #${ROOT_ID} .kpi{grid-template-columns:1fr;} }
+      #${ROOT_ID}{margin:16px 0 24px;font-family:Arial,sans-serif;color:#1b2a4a}
+      #${ROOT_ID} *{box-sizing:border-box}
+      #${ROOT_ID} .wrap{background:#f6f7fb;border:1px solid #e4e7ef;border-radius:14px;padding:16px}
+      #${ROOT_ID} .kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+      #${ROOT_ID} .card{background:#fff;border:1px solid #e6e9f1;border-radius:10px;padding:10px 12px}
+      #${ROOT_ID} .label{font-size:12px;color:#5a6783;margin-bottom:4px}
+      #${ROOT_ID} .val{font-size:24px;font-weight:700;line-height:1}
+      #${ROOT_ID} .chart{background:#fff;border:1px solid #e6e9f1;border-radius:10px;padding:10px;margin-bottom:14px}
+      #${ROOT_ID} svg{width:100%;height:auto;display:block}
+      #${ROOT_ID} .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+      #${ROOT_ID} .btn{border:1px solid #d3d8e5;background:#fff;border-radius:999px;padding:8px 12px;cursor:pointer;font-size:12px}
+      #${ROOT_ID} table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e6e9f1;border-radius:10px;overflow:hidden}
+      #${ROOT_ID} th,#${ROOT_ID} td{padding:10px;border-bottom:1px solid #edf0f6;text-align:left;font-size:13px}
+      #${ROOT_ID} th{font-size:11px;text-transform:uppercase;color:#5a6783;letter-spacing:.04em}
+      #${ROOT_ID} .good{color:#157f55;font-weight:700}
+      #${ROOT_ID} .warn{color:#b86b00;font-weight:700}
+      #${ROOT_ID} .bad{color:#c44536;font-weight:700}
+      @media (max-width:900px){#${ROOT_ID} .kpi{grid-template-columns:repeat(2,minmax(0,1fr))}}
+      @media (max-width:560px){#${ROOT_ID} .kpi{grid-template-columns:1fr}}
     `;
     document.head.appendChild(style);
   }
 
   function findStatsTable() {
     const tables = Array.from(document.querySelectorAll("table"));
-    return (
-      tables.find((table) => {
-        const headerRow = table.querySelector("thead tr");
-        if (!headerRow) return false;
-        const headers = getHeaderColumns(headerRow).map((c) => normalizeText(c.text));
-        return headers.includes("урок") && headers.includes("зашли") && headers.includes("ответили");
-      }) || null
-    );
+
+    // Приоритет: нативная таблица GetCourse
+    const native = tables.find((table) => {
+      if (table.id === INTERNAL_TABLE_ID) return false;
+      if (table.closest(`#${ROOT_ID}`)) return false;
+      return table.classList.contains("lessons-table");
+    });
+    if (native) return native;
+
+    // Фолбэк: по заголовкам, но исключая наши таблицы
+    return tables.find((table) => {
+      if (table.id === INTERNAL_TABLE_ID) return false;
+      if (table.closest(`#${ROOT_ID}`)) return false;
+      const headerRow = table.querySelector("thead tr");
+      if (!headerRow) return false;
+      const headers = getHeaderColumns(headerRow).map((c) => normalizeText(c.text));
+      return headers.includes("урок") && headers.includes("зашли") && headers.includes("ответили");
+    }) || null;
   }
 
   function getHeaderColumns(headerRow) {
@@ -112,7 +152,7 @@
       status: indexOfHeader(headerCols, "статус"),
       entered: indexOfHeader(headerCols, "зашли"),
       answered: indexOfHeader(headerCols, "ответили"),
-      passed: indexOfHeader(headerCols, "прошли"),
+      passed: indexOfHeader(headerCols, "прошли")
     };
 
     const bodyRows = Array.from(table.querySelectorAll("tr")).filter((tr) => !tr.closest("thead"));
@@ -159,23 +199,29 @@
       answered: answered.value,
       answeredRaw: answered.raw,
       passed: passed.value,
-      delta: null, deltaPct: null, answerRate: null,
+      delta: null,
+      deltaPct: null,
+      answerRate: null
     };
   }
 
   function renderRoot(sourceTable, model) {
     let root = document.getElementById(ROOT_ID);
+    const parent = sourceTable.parentNode;
+    if (!parent) return;
 
     if (!root) {
       root = document.createElement("section");
       root.id = ROOT_ID;
-      // Вставляем после таблицы, а не перед ней
-      const parent = sourceTable.parentNode;
       const next = sourceTable.nextSibling;
-      if (next) {
-        parent.insertBefore(root, next);
-      } else {
-        parent.appendChild(root);
+      if (next) parent.insertBefore(root, next);
+      else parent.appendChild(root);
+    } else {
+      // На всякий случай: если root не в том parent, переносим
+      if (root.parentNode !== parent) {
+        const next = sourceTable.nextSibling;
+        if (next) parent.insertBefore(root, next);
+        else parent.appendChild(root);
       }
     }
 
@@ -190,7 +236,7 @@
           <div class="card"><div class="label">Стартовали</div><div class="val">${formatInt(model.first ? model.first.entered : 0)}</div></div>
           <div class="card"><div class="label">Дошли до финала</div><div class="val">${formatInt(model.last ? model.last.entered : 0)}</div></div>
           <div class="card"><div class="label">Дошли до конца, %</div><div class="val">${model.completionRate}%</div></div>
-          <div class="card"><div class="label">Средняя конверсия в ответ</div><div class="val">${avgAnswer === null ? "—" : `${avgAnswer}%`}</div></div>
+          <div class="card"><div class="label">Средняя конверсия в ответ</div><div class="val">${avgAnswer === null ? "—" : avgAnswer + "%"}</div></div>
         </div>
         <div class="chart">
           <div class="head">
@@ -199,7 +245,7 @@
           </div>
           <svg id="${APP_ID}-chart" viewBox="0 0 940 340" aria-label="Воронка уроков"></svg>
         </div>
-        <table>
+        <table id="${INTERNAL_TABLE_ID}">
           <thead>
             <tr>
               <th>Урок</th><th>Зашли</th><th>Ответили</th>
@@ -222,8 +268,7 @@
     const convText = row.answerRate === null ? "—" : `${row.answerRate}%`;
     return `<tr>
       <td>${title}</td><td>${formatInt(row.entered)}</td><td>${answeredText}</td>
-      <td>${convText}</td><td>${deltaText}</td>
-      <td class="${signal.className}">${signal.label}</td>
+      <td>${convText}</td><td>${deltaText}</td><td class="${signal.className}">${signal.label}</td>
     </tr>`;
   }
 
@@ -237,7 +282,7 @@
     const ih = height - m.top - m.bottom;
 
     const values = rows.flatMap((r) => [r.entered, r.answered].filter((v) => v !== null));
-    const yMax = Math.max(10, Math.ceil(Math.max(...values) / 10) * 10);
+    const yMax = Math.max(10, Math.ceil(Math.max.apply(null, values) / 10) * 10);
     const stepX = rows.length > 1 ? iw / (rows.length - 1) : iw;
 
     const x = (i) => m.left + i * stepX;
@@ -279,11 +324,13 @@
   function bindRoot(model) {
     const root = document.getElementById(ROOT_ID);
     if (!root || root.dataset.bound === "1") return;
+
     root.addEventListener("click", (event) => {
       const btn = event.target.closest('[data-role="csv"]');
       if (!btn) return;
       downloadCsv(root._model || model);
     });
+
     root.dataset.bound = "1";
   }
 
@@ -292,13 +339,16 @@
     model.rows.forEach((item, i) => {
       const signal = getSignal(item);
       rows.push([
-        item.title, item.status || "", item.entered,
+        item.title,
+        item.status || "",
+        item.entered,
         item.answered !== null ? item.answered : item.answeredRaw || "",
         item.answerRate === null ? "—" : `${item.answerRate}%`,
         i === 0 || item.delta === null ? "—" : `${item.delta} (${item.deltaPct > 0 ? "+" : ""}${item.deltaPct}%)`,
-        signal.label,
+        signal.label
       ]);
     });
+
     const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
     const link = document.createElement("a");
     link.href = `data:text/csv;charset=utf-8,\uFEFF${encodeURIComponent(csv)}`;
@@ -342,10 +392,15 @@
   function trimLabel(text, max) { const t = normalizeSpace(text); return t.length <= max ? t : `${t.slice(0, max - 1)}…`; }
   function formatInt(v) { return Number(v || 0).toLocaleString("ru-RU"); }
   function toIsoDate(date) {
-    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   }
   function escapeHtml(value) {
-    return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
   init();
