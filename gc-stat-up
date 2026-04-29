@@ -89,12 +89,12 @@
     style.id = STYLE_ID;
     style.textContent = `
       #${ROOT_ID}{
-        --bg:#ffffff;
+        --bg:#f5f2ea;
         --panel:rgba(255,252,246,.92);
-        --panel-strong:#fffdf8;
         --ink:#11224f;
         --muted:#5f6780;
         --line:rgba(17,34,79,.12);
         --blue:#2c63ff;
-        --blue-2:#7aa9ff;
-        --blue-3:#21498f;
+        --orange:#ff6a13;
+        --green:#157f55;
+        --rose:#c44536;
