@@ -1,0 +1,100 @@
+// ==UserScript==
+// @name         GetCourse Stream Stats Upgrade
+// @namespace    https://codex.local
+// @version      0.2.0
+// @description  Renders a visual statistics dashboard for GetCourse stream stats with KPI cards, lesson funnel, diagnostics table, and CSV export.
+// @match        *://*/teach/control/stream/stat/id/*
+// @grant        none
+// @run-at       document-idle
+// ==/UserScript==
+
+(function () {
+  "use strict";
+
+  const APP_ID = "gc-stat-upgrade";
+  const ROOT_ID = `${APP_ID}-root`;
+  const STYLE_ID = `${APP_ID}-style`;
+
+  let rafToken = null;
+  let observerStarted = false;
+
+  function scheduleRefresh() {
+    if (rafToken !== null) {
+      return;
+    }
+    rafToken = window.requestAnimationFrame(() => {
+      rafToken = null;
+      refresh();
+    });
+  }
+
+  function refresh() {
+    injectStyles();
+
+    const sourceTable = findStatsTable();
+    if (!sourceTable || !sourceTable.tBodies.length) {
+      return;
+    }
+
+    const model = buildTableModel(sourceTable);
+    if (!model.rows.length) {
+      return;
+    }
+
+    renderRoot(sourceTable, model);
+    renderChart(model);
+    bindRoot(model);
+    sourceTable.style.display = "none";
+  }
+
+  function injectStyles() {
+    if (document.getElementById(STYLE_ID)) {
+      return;
+    }
+
+    const style = document.createElement("style");
+    style.id = STYLE_ID;
+    style.textContent = `
+      #${ROOT_ID} {
+        --bg: #ffffff;
+        --panel: #ffffff;
+        --panel-strong: #f8fbff;
+        --ink: #11224f;
+        --muted: #5f6780;
+        --line: rgba(44, 99, 255, 0.12);
+        --blue: #2c63ff;
+        --orange: #7aa9ff;
+        --green: #173a7a;
+        --rose: #21498f;
+        --amber: #426ee8;
+        --shadow: 0 24px 64px rgba(17, 34, 79, 0.08);
+        --radius-xl: 28px;
+        --radius-lg: 20px;
+        --radius-md: 14px;
+        margin: 14px 0 26px;
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+        color: var(--ink);
+      }
+
+      #${ROOT_ID} *,
+      #${ROOT_ID} *::before,
+      #${ROOT_ID} *::after {
+        box-sizing: border-box;
+      }
+
+      #${ROOT_ID} .page {
+        max-width: 1380px;
+        margin: 0 auto;
+        padding: 8px 0 20px;
+        background:
+          radial-gradient(circle at top left, rgba(44, 99, 255, 0.10), transparent 32%),
+          radial-gradient(circle at 85% 12%, rgba(122, 169, 255, 0.10), transparent 24%),
+          linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+        border-radius: 28px;
+      }
+
+      #${ROOT_ID} .hero {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+        align-items: stretch;
