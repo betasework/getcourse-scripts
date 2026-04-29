@@ -1,100 +1,100 @@
-// ==UserScript==
-// @name         GetCourse Stream Stats Upgrade
-// @namespace    https://codex.local
-// @version      0.2.0
-// @description  Renders a visual statistics dashboard for GetCourse stream stats with KPI cards, lesson funnel, diagnostics table, and CSV export.
-// @match        *://*/teach/control/stream/stat/id/*
-// @grant        none
-// @run-at       document-idle
-// ==/UserScript==
-
 (function () {
   "use strict";
+
+  if (!/\/teach\/control\/stream\/stat\/id\//.test(location.pathname)) return;
 
   const APP_ID = "gc-stat-upgrade";
   const ROOT_ID = `${APP_ID}-root`;
   const STYLE_ID = `${APP_ID}-style`;
+  const INTERNAL_TABLE_ID = `${APP_ID}-internal-table`;
+  const STATE_KEY = "__gcStatUpgradeState";
 
-  let rafToken = null;
-  let observerStarted = false;
-
-  function scheduleRefresh() {
-    if (rafToken !== null) {
-      return;
+  try {
+    if (window[STATE_KEY] && typeof window[STATE_KEY].destroy === "function") {
+      window[STATE_KEY].destroy();
     }
-    rafToken = window.requestAnimationFrame(() => {
-      rafToken = null;
-      refresh();
+  } catch (_) {}
+
+  const state = {
+    observer: null,
+    timer: null,
+    initializedForTable: null
+  };
+  window[STATE_KEY] = state;
+
+  function destroy() {
+    if (state.observer) {
+      state.observer.disconnect();
+      state.observer = null;
+    }
+    if (state.timer) {
+      clearInterval(state.timer);
+      state.timer = null;
+    }
+    const root = document.getElementById(ROOT_ID);
+    if (root) root.remove();
+  }
+  state.destroy = destroy;
+
+  function init() {
+    injectStyles();
+    tryRender();
+
+    state.observer = new MutationObserver(() => {
+      if (state.initializedForTable) return;
+      tryRender();
     });
+    state.observer.observe(document.body, { childList: true, subtree: true });
+
+    let attempts = 0;
+    state.timer = setInterval(() => {
+      attempts += 1;
+      if (state.initializedForTable || attempts > 40) {
+        clearInterval(state.timer);
+        state.timer = null;
+        return;
+      }
+      tryRender();
+    }, 250);
   }
 
-  function refresh() {
-    injectStyles();
-
+  function tryRender() {
     const sourceTable = findStatsTable();
-    if (!sourceTable || !sourceTable.tBodies.length) {
-      return;
-    }
+    if (!sourceTable) return;
 
     const model = buildTableModel(sourceTable);
-    if (!model.rows.length) {
-      return;
-    }
+    if (!model.rows.length) return;
 
     renderRoot(sourceTable, model);
     renderChart(model);
     bindRoot(model);
+
     sourceTable.style.display = "none";
+    state.initializedForTable = sourceTable;
+
+    if (state.observer) {
+      state.observer.disconnect();
+      state.observer = null;
+    }
+    if (state.timer) {
+      clearInterval(state.timer);
+      state.timer = null;
+    }
   }
 
   function injectStyles() {
-    if (document.getElementById(STYLE_ID)) {
-      return;
-    }
+    if (document.getElementById(STYLE_ID)) return;
 
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
-      #${ROOT_ID} {
-        --bg: #ffffff;
-        --panel: #ffffff;
-        --panel-strong: #f8fbff;
-        --ink: #11224f;
-        --muted: #5f6780;
-        --line: rgba(44, 99, 255, 0.12);
-        --blue: #2c63ff;
-        --orange: #7aa9ff;
-        --green: #173a7a;
-        --rose: #21498f;
-        --amber: #426ee8;
-        --shadow: 0 24px 64px rgba(17, 34, 79, 0.08);
-        --radius-xl: 28px;
-        --radius-lg: 20px;
-        --radius-md: 14px;
-        margin: 14px 0 26px;
-        font-family: "Avenir Next", "Segoe UI", sans-serif;
-        color: var(--ink);
-      }
-
-      #${ROOT_ID} *,
-      #${ROOT_ID} *::before,
-      #${ROOT_ID} *::after {
-        box-sizing: border-box;
-      }
-
-      #${ROOT_ID} .page {
-        max-width: 1380px;
-        margin: 0 auto;
-        padding: 8px 0 20px;
-        background:
-          radial-gradient(circle at top left, rgba(44, 99, 255, 0.10), transparent 32%),
-          radial-gradient(circle at 85% 12%, rgba(122, 169, 255, 0.10), transparent 24%),
-          linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
-        border-radius: 28px;
-      }
-
-      #${ROOT_ID} .hero {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 24px;
-        align-items: stretch;
+      #${ROOT_ID}{
+        --bg:#ffffff;
+        --panel:#ffffff;
+        --panel-strong:#f7faff;
+        --ink:#11224f;
+        --muted:#5f6780;
+        --line:rgba(44,99,255,.12);
+        --blue:#2c63ff;
+        --blue-2:#7aa9ff;
+        --blue-3:#21498f;
