@@ -127,38 +127,10 @@
 
       #${ROOT_ID} .hero{
         display:grid;
-        grid-template-columns:1fr;
+        grid-template-columns:1.15fr .95fr;
         gap:16px;
         margin-bottom:16px;
-      }
-
-      #${ROOT_ID} .hero-main{padding:24px;}
-      #${ROOT_ID} .eyebrow{
-        display:inline-flex;
-        align-items:center;
-        gap:8px;
-        padding:6px 10px;
-        border-radius:999px;
-        background:rgba(17,34,79,.06);
-        color:var(--muted);
-        font-size:12px;
-        text-transform:uppercase;
-        letter-spacing:.04em;
-      }
-
-      #${ROOT_ID} .hero-title{
-        margin-top:14px;
-        font-size:clamp(30px,4vw,54px);
-        line-height:.95;
-        letter-spacing:-.04em;
-      }
-
-      #${ROOT_ID} .hero-copy{
-        margin-top:12px;
-        color:var(--muted);
-        font-size:16px;
-        line-height:1.5;
-        max-width:760px;
+        align-items:stretch;
       }
 
       #${ROOT_ID} .hero-side{
@@ -219,14 +191,13 @@
       #${ROOT_ID} .hero-insights{ display:grid; gap:8px; }
       #${ROOT_ID} .hero-insight-title{ font-size:13px; line-height:1.25; }
 
-      #${ROOT_ID} .metrics{
+      #${ROOT_ID} .hero-metrics{
         display:grid;
-        grid-template-columns:repeat(4,minmax(0,1fr));
+        grid-template-columns:repeat(2,minmax(0,1fr));
         gap:12px;
-        margin-bottom:16px;
       }
 
-      #${ROOT_ID} .metric{ padding:14px 16px; }
+      #${ROOT_ID} .metric{ padding:14px 16px; min-width:0; }
       #${ROOT_ID} .metric-label{ font-size:12px; color:var(--muted); margin-bottom:8px; }
       #${ROOT_ID} .metric-value{ font-size:30px; line-height:.95; letter-spacing:-.03em; font-weight:700; }
       #${ROOT_ID} .metric-note{ margin-top:8px; color:var(--muted); font-size:12px; line-height:1.4; }
@@ -313,19 +284,18 @@
 
       @media (max-width:1120px){
         #${ROOT_ID} .hero { grid-template-columns:1fr; }
-        #${ROOT_ID} .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
+        #${ROOT_ID} .hero-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
       }
 
       @media (max-width:720px){
         #${ROOT_ID} .page { padding:10px; }
-        #${ROOT_ID} .hero-main,
         #${ROOT_ID} .hero-side,
         #${ROOT_ID} .chart-card,
         #${ROOT_ID} .table-card,
         #${ROOT_ID} .metric { padding:14px; }
 
         #${ROOT_ID} .hero-grid,
-        #${ROOT_ID} .metrics { grid-template-columns:1fr; }
+        #${ROOT_ID} .hero-metrics { grid-template-columns:1fr; }
       }
     `;
     document.head.appendChild(style);
@@ -544,10 +514,10 @@
               </div>
             ` : ""}
           </aside>
-        </section>
 
-        <section class="metrics">
-          ${metricItems.map(renderMetricCard).join("")}
+          <div class="hero-metrics">
+            ${metricItems.map(renderMetricCard).join("")}
+          </div>
         </section>
 
         <section class="layout">
