@@ -127,7 +127,7 @@
 
       #${ROOT_ID} .hero{
         display:grid;
-        grid-template-columns:1.4fr .95fr;
+        grid-template-columns:1fr;
         gap:16px;
         margin-bottom:16px;
       }
@@ -520,15 +520,6 @@
     root.innerHTML = `
       <div class="page">
         <section class="hero">
-          <article class="panel hero-main">
-            <span class="eyebrow">GetCourse / Statistics Upgrade</span>
-            <h1 class="hero-title">Статистика, которая сразу показывает, где курс теряет людей</h1>
-            <p class="hero-copy">
-              Вместо одной линии и сухой таблицы дашборд дает обзор воронки, диагностику уроков
-              и точки действия для куратора.
-            </p>
-          </article>
-
           <aside class="panel hero-side">
             <p class="side-title">Ключевой вывод</p>
             <div>
