@@ -105,9 +105,9 @@
       #${ROOT_ID} .legend{ display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:12px; margin-bottom:12px; }
       #${ROOT_ID} .legend span{ display:inline-flex; align-items:center; gap:6px; }
       #${ROOT_ID} .swatch{ width:12px; height:12px; border-radius:3px; display:inline-block; flex-shrink:0; }
-      #${ROOT_ID} .chart-outer{ max-width:100%; overflow:hidden; border-radius:14px; border:1px solid rgba(17,34,79,.06); background:linear-gradient(180deg,rgba(17,34,79,.03),rgba(17,34,79,0)); }
-      #${ROOT_ID} .chart-wrap{ overflow-x:auto; overflow-y:visible; padding:16px 16px 0; width:100%; display:block; }
-      #${ROOT_ID} svg{ display:block; }
+      #${ROOT_ID} .chart-outer{ width:100%; overflow-x:auto; overflow-y:visible; border-radius:14px; border:1px solid rgba(17,34,79,.06); background:linear-gradient(180deg,rgba(17,34,79,.03),rgba(17,34,79,0)); -webkit-overflow-scrolling:touch; }
+      #${ROOT_ID} .chart-wrap{ display:inline-block; min-width:100%; padding:16px 16px 0; }
+      #${ROOT_ID} svg{ display:block; overflow:visible; }
       #${ROOT_ID} .table-card{ padding:16px; }
       #${ROOT_ID} table{ width:100%; border-collapse:collapse; }
       #${ROOT_ID} th,#${ROOT_ID} td{ padding:10px; text-align:left; border-bottom:1px solid rgba(17,34,79,.08); vertical-align:top; font-size:13px; }
@@ -353,7 +353,7 @@
     const n = model.rows.length;
     const hasAnswered = model.rows.some(r => r.answered !== null);
     const groupW = hasAnswered ? BAR_W * 2 + BAR_GAP : BAR_W;
-    const totalW = Math.max(600, marginL + n * groupW + (n - 1) * GROUP_GAP + marginR);
+    const totalW = marginL + n * groupW + (n - 1) * GROUP_GAP + marginR;
 
     svg.setAttribute("width", totalW);
     svg.setAttribute("height", chartH);
