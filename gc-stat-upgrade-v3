@@ -359,7 +359,7 @@
     const outer = svg.closest(".chart-outer");
     if (outer) {
       const root = document.getElementById(ROOT_ID);
-      const availW = root ? root.offsetWidth - 32 : window.innerWidth - 64;
+      const availW = root ? root.offsetWidth - 64 : window.innerWidth - 96;
       outer.style.width = availW + "px";
       outer.style.maxWidth = availW + "px";
     }
