@@ -355,6 +355,15 @@
     const groupW = hasAnswered ? BAR_W * 2 + BAR_GAP : BAR_W;
     const totalW = marginL + n * groupW + (n - 1) * GROUP_GAP + marginR;
 
+    // Явно ограничиваем ширину контейнера через JS
+    const outer = svg.closest(".chart-outer");
+    if (outer) {
+      const root = document.getElementById(ROOT_ID);
+      const availW = root ? root.offsetWidth - 32 : window.innerWidth - 64;
+      outer.style.width = availW + "px";
+      outer.style.maxWidth = availW + "px";
+    }
+
     svg.setAttribute("width", totalW);
     svg.setAttribute("height", chartH);
     svg.setAttribute("viewBox", `0 0 ${totalW} ${chartH}`);
