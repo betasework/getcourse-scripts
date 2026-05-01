@@ -1,698 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ModuleStat — установка</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Mulish:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --ink: #0f0f0f;
-  --muted: #6b6b6b;
-  --faint: #f2f0eb;
-  --accent: #1a4fd6;
-  --accent-light: #e8eefb;
-  --success: #1a7a4a;
-  --success-light: #e6f4ed;
-  --warn: #9a5a00;
-  --warn-light: #fdf3e3;
-  --border: #e0ddd6;
-  --white: #ffffff;
-}
-
-body {
-  font-family: 'Mulish', sans-serif;
-  background: #faf9f6;
-  color: var(--ink);
-  line-height: 1.6;
-  font-size: 16px;
-  padding: 64px 32px 100px;
-}
-
-.page { max-width: 860px; margin: 0 auto; }
-
-/* Header */
-.header { margin-bottom: 48px; }
-.logo {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 20px;
-}
-.logo span { color: var(--muted); font-weight: 400; }
-h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: 48px;
-  font-weight: 800;
-  line-height: 1.15;
-  color: var(--ink);
-  margin-bottom: 16px;
-}
-.subtitle {
-  font-size: 18px;
-  color: var(--muted);
-  font-weight: 400;
-  max-width: 560px;
-}
-
-/* What it does */
-.features {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 48px;
-}
-.feature {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px 18px;
-}
-.feature-icon { font-size: 20px; margin-bottom: 8px; }
-.feature-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-.feature-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-
-/* Statuses preview */
-.statuses {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 48px;
-}
-.statuses-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
-.status-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.status-row:last-child { margin-bottom: 0; }
-.badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
-  min-width: 200px;
-}
-.badge-green { background: #EAF3DE; color: #27500A; }
-.badge-purple { background: #EEEDFE; color: #3C3489; }
-.badge-amber { background: #FAEEDA; color: #633806; }
-.badge-blue { background: #E6F1FB; color: #0C447C; }
-.badge-red { background: #FCEBEB; color: #791F1F; }
-.status-desc { font-size: 12px; color: var(--muted); }
-
-/* Install tabs */
-.install-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.install-subtitle { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
-
-.tabs {
-  display: flex;
-  gap: 0;
-  margin-bottom: 28px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-}
-.tab-btn {
-  flex: 1;
-  padding: 14px 20px;
-  background: var(--faint);
-  border: none;
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--muted);
-  transition: background .15s, color .15s;
-  text-align: center;
-  border-right: 1px solid var(--border);
-}
-.tab-btn:last-child { border-right: none; }
-.tab-btn.active {
-  background: var(--white);
-  color: var(--accent);
-}
-.tab-btn:hover:not(.active) { background: #ebe9e2; }
-
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
-
-/* Bookmark button */
-.bookmark-wrap {
-  background: var(--accent-light);
-  border: 2px dashed #a0b8ef;
-  border-radius: 16px;
-  padding: 32px;
-  text-align: center;
-  margin-bottom: 32px;
-}
-.bookmark-label { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
-.bookmark-btn {
-  display: inline-block;
-  background: var(--accent);
-  color: #fff;
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  padding: 14px 28px;
-  border-radius: 10px;
-  text-decoration: none;
-  cursor: grab;
-  border: none;
-  transition: transform .15s, box-shadow .15s;
-  box-shadow: 0 4px 16px rgba(26,79,214,.25);
-  user-select: none;
-}
-.bookmark-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,79,214,.3); }
-.bookmark-btn:active { cursor: grabbing; transform: scale(.97); }
-.bookmark-arrow { font-size: 12px; color: var(--muted); margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-.bookmark-arrow svg { flex-shrink: 0; }
-
-/* Steps */
-.steps-label {
-  font-family: 'Syne', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 16px;
-}
-.step {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  margin-bottom: 12px;
-  padding: 16px;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-}
-.step-num {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--ink);
-  color: #fff;
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.step-num.blue { background: var(--accent); }
-.step-body { flex: 1; min-width: 0; }
-.step-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-.step-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
-.step-desc b { color: var(--ink); font-weight: 600; }
-.step-desc code {
-  background: var(--faint);
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-family: monospace;
-}
-
-/* Manual install */
-.manual {
-  margin-top: 20px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-}
-.manual-header {
-  padding: 14px 18px;
-  background: var(--faint);
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  user-select: none;
-}
-.manual-header:hover { background: #ebe9e2; }
-.manual-chevron { transition: transform .2s; }
-.manual-body { display: none; padding: 18px; background: var(--white); }
-.manual-body.open { display: block; }
-.manual-body p { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
-.code-area {
-  background: var(--faint);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px;
-  font-family: monospace;
-  font-size: 10px;
-  line-height: 1.5;
-  word-break: break-all;
-  color: var(--ink);
-  max-height: 100px;
-  overflow-y: auto;
-  margin-bottom: 10px;
-}
-.copy-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--white);
-  font-family: 'Mulish', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  color: var(--ink);
-  transition: background .15s;
-}
-.copy-btn:hover { background: var(--faint); }
-.copied-msg { font-size: 12px; color: var(--success); margin-left: 8px; opacity: 0; transition: opacity .3s; }
-
-/* Theme code block */
-.theme-code-wrap {
-  background: var(--faint);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px;
-  margin: 12px 0;
-  overflow: hidden;
-  width: 100%;
-  box-sizing: border-box;
-}
-.theme-code-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-.theme-code-area {
-  background: #1e1e2e;
-  color: #cdd6f4;
-  border-radius: 8px;
-  padding: 14px;
-  font-family: monospace;
-  font-size: 10px;
-  line-height: 1.5;
-  overflow: auto;
-  max-height: 120px;
-  margin-bottom: 10px;
-  white-space: pre-wrap;
-  word-break: break-all;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Note box */
-.note {
-  background: var(--warn-light);
-  border: 1px solid #f0d5a0;
-  border-left: 3px solid #e89c2a;
-  border-radius: 0 8px 8px 0;
-  padding: 12px 16px;
-  font-size: 13px;
-  color: var(--warn);
-  line-height: 1.6;
-  margin: 12px 0;
-}
-.note b { color: #7a4500; }
-
-/* Usage */
-.usage {
-  margin-top: 48px;
-  background: var(--success-light);
-  border: 1px solid #b8dfc9;
-  border-radius: 12px;
-  padding: 20px 24px;
-}
-.usage-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--success); margin-bottom: 10px; }
-.usage-step { font-size: 13px; color: #1a4a32; margin-bottom: 6px; display: flex; gap: 8px; }
-.usage-step:last-child { margin-bottom: 0; }
-
-@media (max-width: 600px) {
-  body { padding: 32px 16px 60px; font-size: 15px; }
-  h1 { font-size: 28px; }
-  .subtitle { font-size: 15px; }
-  .features { grid-template-columns: 1fr; }
-  .tabs { flex-direction: column; }
-  .tab-btn { border-right: none; border-bottom: 1px solid var(--border); }
-  .tab-btn:last-child { border-bottom: none; }
-  .badge { min-width: 160px; font-size: 10px; }
-  .status-row { flex-wrap: wrap; gap: 6px; }
-}
-</style>
-</head>
-<body>
-
-<!-- ХРАНИЛИЩЕ ЧИСТОГО JS-КОДА (без URL-кодирования) -->
-<textarea id="rawBookmarklet" style="display:none;">(function(){
-  if(location.href.indexOf('/teach/control/stat/stream/id/')===-1){alert('Откройте страницу Ученики модуля в GetCourse');return;}
-  var m=location.href.match(/\/id\/(\d+)/);
-  if(!m)return;
-  var tid=m[1];
-  var rows=document.querySelectorAll('tr.user-tr');
-  if(!rows.length){alert('Строки учеников не найдены');return;}
-  var thead=document.querySelector('tr:not(.user-tr)');
-  var ths=thead?thead.querySelectorAll('th'):[];
-  var visitedIdx=-1,answeredIdx=-1,lastVisitIdx=-1,statusIdx=-1;
-  ths.forEach(function(th,i){var t=th.textContent.replace(/\s+/g,' ').trim();if(t.indexOf('Посетил')!==-1)visitedIdx=i;if(t.indexOf('Ответ')!==-1)answeredIdx=i;if(t.indexOf('Последн')!==-1)lastVisitIdx=i;if(t==='Статус')statusIdx=i;});
-  if(lastVisitIdx===-1&&statusIdx!==-1&&statusIdx+1<ths.length){var nxt=ths[statusIdx+1];if(!nxt.className||nxt.className.indexOf('gc-pct')===-1)lastVisitIdx=statusIdx+1;}
-  if(visitedIdx===-1||answeredIdx===-1){alert('Не найдены колонки "Посетил уроков" и "Ответы". Проверьте страницу.');return;}
-  var statusEl=document.createElement('div');
-  statusEl.style.cssText='position:fixed;top:16px;right:16px;z-index:99999;background:#185FA5;color:#fff;padding:10px 18px;border-radius:8px;font-size:14px;font-family:sans-serif;box-shadow:0 2px 12px rgba(0,0,0,.2)';
-  statusEl.textContent='⏳ Считаю уроки модуля...';
-  document.body.appendChild(statusEl);
-  fetch('/teach/control/stream/view/id/'+tid,{credentials:'include'}).then(function(r){return r.text();}).then(function(html){
-    var doc=(new DOMParser()).parseFromString(html,'text/html');
-    var lessonCount=doc.querySelectorAll('ul.lesson-list li').length;
-    var hwCount=doc.querySelectorAll('ul.lesson-list li.user-state-has_mission,ul.lesson-list li.user-state-need_accomplish,ul.lesson-list li.user-state-answered,ul.lesson-list li.user-state-accomplished').length;
-    if(lessonCount===0){
-      statusEl.style.background='#A32D2D';
-      statusEl.textContent='❌ Не удалось определить уроки. Введите вручную.';
-      var n=prompt('Сколько уроков в этом модуле?');
-      lessonCount=parseInt(n)||1;
-      var h=prompt('Сколько из них с домашним заданием?');
-      hwCount=parseInt(h)||0;
-    } else {
-      statusEl.textContent='✓ Уроков: '+lessonCount+(hwCount>0?' · ДЗ: '+hwCount:'');
-    }
-    applyStats(lessonCount,hwCount);
-    setTimeout(function(){statusEl.remove();},4000);
-  }).catch(function(){
-    statusEl.style.background='#A32D2D';
-    statusEl.textContent='❌ Ошибка загрузки. Введите вручную.';
-    var n=prompt('Сколько уроков в этом модуле?');
-    var h=prompt('Сколько из них с домашним заданием?');
-    applyStats(parseInt(n)||1,parseInt(h)||0);
-    setTimeout(function(){statusEl.remove();},2000);
-  });
-  function parseGcDate(str){
-    if(!str)return null;
-    str=str.replace(/\s+/g,' ').trim().toLowerCase();
-    if(str==='сегодня')return new Date();
-    if(str==='вчера'){var d=new Date();d.setDate(d.getDate()-1);return d;}
-    var months={'янв':0,'фев':1,'мар':2,'апр':3,'май':4,'мая':4,'июн':5,'июл':6,'авг':7,'сен':8,'окт':9,'ноя':10,'дек':11};
-    var mDaysAgo=str.match(/(\d+)\s*дн/);
-    if(mDaysAgo){var d=new Date();d.setDate(d.getDate()-parseInt(mDaysAgo[1]));return d;}
-    var mDot=str.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})/);
-    if(mDot)return new Date(parseInt(mDot[3]),parseInt(mDot[2])-1,parseInt(mDot[1]));
-    var mRuFull=str.match(/^(\d{1,2})\s+([а-я]+)\s+(\d{4})/);
-    if(mRuFull&&months[mRuFull[2].slice(0,3)]!==undefined)return new Date(parseInt(mRuFull[3]),months[mRuFull[2].slice(0,3)],parseInt(mRuFull[1]));
-    var mWd=str.match(/^[а-я]{2}\s+(\d{1,2})\s+([а-я]+)(?:\s+(\d{4}))?/);
-    if(mWd&&months[mWd[2].slice(0,3)]!==undefined){if(mWd[3])return new Date(parseInt(mWd[3]),months[mWd[2].slice(0,3)],parseInt(mWd[1]));var now=new Date();var yr=now.getFullYear();var d=new Date(yr,months[mWd[2].slice(0,3)],parseInt(mWd[1]));if(d>now)d.setFullYear(yr-1);return d;}
-    var parsed=new Date(str);
-    return isNaN(parsed)?null:parsed;
-  }
-  function daysSince(date){
-    if(!date)return null;
-    var diff=Date.now()-date.getTime();
-    return Math.floor(diff/(1000*60*60*24));
-  }
-  function getStatus(row){
-    var tds=row.querySelectorAll('td');
-    var statuses=['Завершен','Завершён','Начат','Не начат'];
-    for(var i=0;i<tds.length;i++){
-      var t=tds[i].textContent.replace(/\s+/g,' ').trim();
-      for(var j=0;j<statuses.length;j++){if(t===statuses[j])return t;}
-    }
-    return '';
-  }
-  function applyStats(maxLessons,hwCount){
-    var table=rows[0].closest('table');
-    var thead2=table.querySelector('thead tr');
-    if(!thead2.querySelector('th.gc-pct')){
-      ['Просмотрено','Сдано ДЗ','Отставание','Статус','Не заходил (дн.)'].forEach(function(t){
-        var th=document.createElement('th');
-        th.textContent=t;
-        th.className='gc-pct';
-        th.style.cssText='text-align:center;white-space:nowrap;padding:4px 8px;font-size:13px;';
-        thead2.appendChild(th);
-      });
-    }
-    rows.forEach(function(row){
-      if(row.querySelector('td.gc-pct'))return;
-      var tds=row.querySelectorAll('td');if(tds.length<4)return;
-      var visited=parseInt(tds[visitedIdx].textContent.trim())||0;
-      var answered=parseInt(tds[answeredIdx].textContent.trim())||0;
-      var gcStatus=getStatus(row);
-      var isCompleted=gcStatus.indexOf('Завершен')!==-1||gcStatus.indexOf('Завершён')!==-1;
-      var visitedShow=isCompleted?maxLessons:Math.min(visited,maxLessons);
-      var answeredShow=hwCount>0?(isCompleted?hwCount:Math.min(answered,hwCount)):0;
-      var gap=isCompleted?0:(visited===0?0:(hwCount>0?Math.max(0,hwCount-answered):0));
-      var pV=Math.round(visitedShow*100/maxLessons);
-      var pA=hwCount>0?Math.round(answeredShow*100/hwCount):null;
-      var days=null;
-      if(lastVisitIdx!==-1&&tds[lastVisitIdx]){days=daysSince(parseGcDate(tds[lastVisitIdx].textContent));}
-      function bar(pct,col){
-        var c=col||(pct>=80?'#3B6D11':pct>=40?'#BA7517':'#A32D2D');
-        return '<span style="display:inline-block;width:52px;height:7px;background:#ddd;border-radius:4px;vertical-align:middle;margin-right:4px"><span style="display:block;width:'+pct+'%;height:100%;background:'+c+';border-radius:4px"></span></span>';
-      }
-      var status,badge;
-      if(isCompleted){status='✓ завершён';badge='background:#EAF3DE;color:#27500A';}
-      else if(visited===0){status='не начал';badge='background:#FCEBEB;color:#791F1F';}
-      else if(pV===100&&hwCount>0&&pA<100){status='Уроки пройдены, ДЗ не закрыто';badge='background:#EEEDFE;color:#3C3489';}
-      else if(gap>0){status='ДЗ отстаёт от просмотров';badge='background:#FAEEDA;color:#633806';}
-      else{status='в процессе';badge='background:#E6F1FB;color:#0C447C';}
-      var gapColor=gap>=3?'#A32D2D':gap>=1?'#BA7517':'#3B6D11';
-      var gapStr=hwCount>0?(gap>0?'<span style="color:'+gapColor+';font-weight:500">-'+gap+'</span>':'<span style="color:#3B6D11">0</span>'):'<span style="color:#888">—</span>';
-      var pAcell=hwCount>0?(bar(pA,'#185FA5')+'<span style="font-size:12px">'+pA+'%</span>'):'<span style="color:#888;font-size:12px">нет ДЗ</span>';
-      var daysColor=days===null?'#888':(days>=5?'#A32D2D':'#3B6D11');
-      var daysStr=days===null?'<span style="color:#888;font-size:12px">—</span>':(days>=5?'<span style="color:#A32D2D;font-weight:700;font-size:12px">'+days+' дн. ⚠</span>':'<span style="color:#3B6D11;font-size:12px">'+days+' дн.</span>');
-      row.dataset.gcDays=days!==null?String(days):'';
-      [
-        '<td class="gc-pct" style="text-align:center;padding:4px 8px">'+bar(pV)+'<span style="font-size:12px">'+pV+'%</span></td>',
-        '<td class="gc-pct" style="text-align:center;padding:4px 8px">'+pAcell+'</td>',
-        '<td class="gc-pct" style="text-align:center;padding:4px 8px;font-size:13px">'+gapStr+'</td>',
-        '<td class="gc-pct" style="text-align:center;padding:4px 8px"><span style="padding:2px 9px;border-radius:10px;font-size:11px;white-space:nowrap;'+badge+'">'+status+'</span></td>',
-        '<td class="gc-pct" style="text-align:center;padding:4px 8px">'+daysStr+'</td>'
-      ].forEach(function(h){
-        var tmp=document.createElement('tbody');
-        tmp.innerHTML='<tr>'+h+'</tr>';
-        row.appendChild(tmp.querySelector('td'));
-      });
-    });
-    (function(){
-      var allThs=thead2.querySelectorAll('th.gc-pct');
-      var daysTh=allThs[allThs.length-1];
-      if(!daysTh)return;
-      var sortAsc=false;
-      daysTh.style.cursor='pointer';
-      daysTh.title='Нажмите для сортировки';
-      daysTh.innerHTML='Не заходил (дн.) <span style="font-size:10px">▼</span>';
-      daysTh.addEventListener('click',function(){
-        sortAsc=!sortAsc;
-        daysTh.innerHTML='Не заходил (дн.) <span style="font-size:10px">'+(sortAsc?'▲':'▼')+'</span>';
-        var tbody=table.querySelector('tbody')||table;
-        var allRows=Array.prototype.slice.call(tbody.querySelectorAll('tr.user-tr'));
-        allRows.sort(function(a,b){
-          var va=a.dataset.gcDays===''?null:parseInt(a.dataset.gcDays);
-          var vb=b.dataset.gcDays===''?null:parseInt(b.dataset.gcDays);
-          if(va===null&&vb===null)return 0;
-          if(va===null)return 1;
-          if(vb===null)return -1;
-          return sortAsc?va-vb:vb-va;
-        });
-        allRows.forEach(function(r){tbody.appendChild(r);});
-      });
-    })();
-    var old=document.getElementById('gc-csv-btn');if(old)old.remove();
-    var btn=document.createElement('button');btn.id='gc-csv-btn';
-    btn.innerHTML='Скачать CSV';
-    btn.style.cssText='margin:12px 0;padding:8px 18px;background:#185FA5;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:sans-serif;';
-    btn.onclick=function(){
-      var lines=[['Имя','Ссылка','Посетил уроков','% просмотров','Сдано ДЗ','% ДЗ','Отставание (ДЗ)','Статус','Всего уроков','Уроков с ДЗ','Не заходил (дн.)']];
-      rows.forEach(function(row){
-        var tds=row.querySelectorAll('td');if(tds.length<4)return;
-        var linkEl=row.querySelector('a');
-        var name=linkEl?linkEl.textContent.trim():'';
-        var link=linkEl?linkEl.href:'';
-        var visited=parseInt(tds[visitedIdx].textContent)||0;
-        var answered=parseInt(tds[answeredIdx].textContent)||0;
-        var gcStatus=getStatus(row);
-        var isCompleted=gcStatus.indexOf('Завершен')!==-1||gcStatus.indexOf('Завершён')!==-1;
-        var visitedShow=isCompleted?maxLessons:Math.min(visited,maxLessons);
-        var answeredShow=hwCount>0?(isCompleted?hwCount:Math.min(answered,hwCount)):0;
-        var gap=isCompleted?0:(visited===0?0:(hwCount>0?Math.max(0,hwCount-answered):0));
-        var pV=Math.round(visitedShow*100/maxLessons);
-        var pA=hwCount>0?Math.round(answeredShow*100/hwCount):null;
-        var days=null;
-        if(lastVisitIdx!==-1&&tds[lastVisitIdx]){days=daysSince(parseGcDate(tds[lastVisitIdx].textContent));}
-        var status=isCompleted?'завершён':visited===0?'не начал':pV===100&&hwCount>0&&pA<100?'Уроки пройдены, ДЗ не закрыто':gap>0?'ДЗ отстаёт от просмотров':'в процессе';
-        lines.push([name,link,visited,pV+'%',answered,hwCount>0?(pA+'%'):'н/д',gap,status,maxLessons,hwCount,days!==null?days:'н/д']);
-      });
-      var csv=lines.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
-      var a=document.createElement('a');
-      a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
-      a.download='progress_module_'+tid+'_'+new Date().toISOString().slice(0,10)+'.csv';
-      a.click();
-    };
-    var form=document.getElementById('actionForm');
-    if(form)form.insertAdjacentElement('beforebegin',btn);else document.body.prepend(btn);
-  }
-})()</textarea>
-
-<textarea id="rawThemeCode" style="display:none;">$(document).ready(function(){
-  if(location.href.indexOf('/teach/control/stat/stream/id/')===-1)return;
-  var rows=document.querySelectorAll('tr.user-tr');
-  if(!rows.length)return;
-  var m=location.href.match(/\/id\/(\d+)/);
-  if(!m)return;
-  var tid=m[1];
-  var thead=document.querySelector('tr:not(.user-tr)');
-  var ths=thead?thead.querySelectorAll('th'):[];
-  var visitedIdx=-1,answeredIdx=-1,lastVisitIdx=-1,statusIdx=-1;
-  ths.forEach(function(th,i){var t=th.textContent.replace(/\s+/g,' ').trim();if(t.indexOf('Посетил')!==-1)visitedIdx=i;if(t.indexOf('Ответ')!==-1)answeredIdx=i;if(t.indexOf('Последн')!==-1)lastVisitIdx=i;if(t==='Статус')statusIdx=i;});
-  if(lastVisitIdx===-1&&statusIdx!==-1&&statusIdx+1<ths.length){var nxt=ths[statusIdx+1];if(!nxt.className||nxt.className.indexOf('gc-pct')===-1)lastVisitIdx=statusIdx+1;}
-  if(visitedIdx===-1||answeredIdx===-1)return;
-  var statusEl=document.createElement('div');
-  statusEl.style.cssText='position:fixed;top:16px;right:16px;z-index:99999;background:#185FA5;color:#fff;padding:10px 18px;border-radius:8px;font-size:14px;font-family:sans-serif;box-shadow:0 2px 12px rgba(0,0,0,.2)';
-  statusEl.textContent='⏳ Считаю уроки модуля...';
-  document.body.appendChild(statusEl);
-  fetch('/teach/control/stream/view/id/'+tid,{credentials:'include'}).then(function(r){return r.text();}).then(function(html){
-    var doc=(new DOMParser()).parseFromString(html,'text/html');
-    var lessonCount=doc.querySelectorAll('ul.lesson-list li').length;
-    var hwCount=doc.querySelectorAll('ul.lesson-list li.user-state-has_mission,ul.lesson-list li.user-state-need_accomplish,ul.lesson-list li.user-state-answered,ul.lesson-list li.user-state-accomplished').length;
-    if(lessonCount===0){statusEl.style.background='#A32D2D';statusEl.textContent='❌ Не удалось определить уроки. Введите вручную.';var n=prompt('Сколько уроков?');lessonCount=parseInt(n)||1;var h=prompt('Сколько с ДЗ?');hwCount=parseInt(h)||0;}
-    else{statusEl.textContent='✓ Уроков: '+lessonCount+(hwCount>0?' · ДЗ: '+hwCount:'');}
-    applyStats(lessonCount,hwCount);
-    setTimeout(function(){statusEl.remove();},4000);
-  }).catch(function(){
-    statusEl.style.background='#A32D2D';statusEl.textContent='❌ Ошибка. Введите вручную.';
-    var n=prompt('Сколько уроков?');var h=prompt('Сколько с ДЗ?');
-    applyStats(parseInt(n)||1,parseInt(h)||0);
-    setTimeout(function(){statusEl.remove();},2000);
-  });
-  function parseGcDate(str){
-    if(!str)return null;
-    str=str.replace(/\s+/g,' ').trim().toLowerCase();
-    if(str==='сегодня')return new Date();
-    if(str==='вчера'){var d=new Date();d.setDate(d.getDate()-1);return d;}
-    var months={'янв':0,'фев':1,'мар':2,'апр':3,'май':4,'мая':4,'июн':5,'июл':6,'авг':7,'сен':8,'окт':9,'ноя':10,'дек':11};
-    var mDaysAgo=str.match(/(\d+)\s*дн/);
-    if(mDaysAgo){var d=new Date();d.setDate(d.getDate()-parseInt(mDaysAgo[1]));return d;}
-    var mDot=str.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})/);
-    if(mDot)return new Date(parseInt(mDot[3]),parseInt(mDot[2])-1,parseInt(mDot[1]));
-    var mRuFull=str.match(/^(\d{1,2})\s+([а-я]+)\s+(\d{4})/);
-    if(mRuFull&&months[mRuFull[2].slice(0,3)]!==undefined)return new Date(parseInt(mRuFull[3]),months[mRuFull[2].slice(0,3)],parseInt(mRuFull[1]));
-    var mWd=str.match(/^[а-я]{2}\s+(\d{1,2})\s+([а-я]+)(?:\s+(\d{4}))?/);
-    if(mWd&&months[mWd[2].slice(0,3)]!==undefined){if(mWd[3])return new Date(parseInt(mWd[3]),months[mWd[2].slice(0,3)],parseInt(mWd[1]));var now=new Date();var yr=now.getFullYear();var d=new Date(yr,months[mWd[2].slice(0,3)],parseInt(mWd[1]));if(d>now)d.setFullYear(yr-1);return d;}
-    var parsed=new Date(str);
-    return isNaN(parsed)?null:parsed;
-  }
-  function daysSince(date){
-    if(!date)return null;
-    return Math.floor((Date.now()-date.getTime())/(1000*60*60*24));
-  }
-  function getStatus(row){var tds=row.querySelectorAll('td');var statuses=['Завершен','Завершён','Начат','Не начат'];for(var i=0;i<tds.length;i++){var t=tds[i].textContent.replace(/\s+/g,' ').trim();for(var j=0;j<statuses.length;j++){if(t===statuses[j])return t;}}return '';}
-  function applyStats(maxLessons,hwCount){
-    var table=rows[0].closest('table');
-    var thead2=table.querySelector('thead tr');
-    if(!thead2.querySelector('th.gc-pct')){['Просмотрено','Сдано ДЗ','Отставание','Статус','Не заходил (дн.)'].forEach(function(t){var th=document.createElement('th');th.textContent=t;th.className='gc-pct';th.style.cssText='text-align:center;white-space:nowrap;padding:4px 8px;font-size:13px;';thead2.appendChild(th);});}
-    rows.forEach(function(row){
-      if(row.querySelector('td.gc-pct'))return;
-      var tds=row.querySelectorAll('td');if(tds.length<4)return;
-      var visited=parseInt(tds[visitedIdx].textContent.trim())||0;
-      var answered=parseInt(tds[answeredIdx].textContent.trim())||0;
-      var gcStatus=getStatus(row);
-      var isCompleted=gcStatus.indexOf('Завершен')!==-1||gcStatus.indexOf('Завершён')!==-1;
-      var visitedShow=isCompleted?maxLessons:Math.min(visited,maxLessons);
-      var answeredShow=hwCount>0?(isCompleted?hwCount:Math.min(answered,hwCount)):0;
-      var gap=isCompleted?0:(visited===0?0:(hwCount>0?Math.max(0,hwCount-answered):0));
-      var pV=Math.round(visitedShow*100/maxLessons);
-      var pA=hwCount>0?Math.round(answeredShow*100/hwCount):null;
-      var days=null;
-      if(lastVisitIdx!==-1&&tds[lastVisitIdx]){days=daysSince(parseGcDate(tds[lastVisitIdx].textContent));}
-      function bar(pct,col){var c=col||(pct>=80?'#3B6D11':pct>=40?'#BA7517':'#A32D2D');return '<span style="display:inline-block;width:52px;height:7px;background:#ddd;border-radius:4px;vertical-align:middle;margin-right:4px"><span style="display:block;width:'+pct+'%;height:100%;background:'+c+';border-radius:4px"></span></span>';}
-      var status,badge;
-      if(isCompleted){status='✓ завершён';badge='background:#EAF3DE;color:#27500A';}
-      else if(visited===0){status='не начал';badge='background:#FCEBEB;color:#791F1F';}
-      else if(pV===100&&hwCount>0&&pA<100){status='Уроки пройдены, ДЗ не закрыто';badge='background:#EEEDFE;color:#3C3489';}
-      else if(gap>0){status='ДЗ отстаёт от просмотров';badge='background:#FAEEDA;color:#633806';}
-      else{status='в процессе';badge='background:#E6F1FB;color:#0C447C';}
-      var gapColor=gap>=3?'#A32D2D':gap>=1?'#BA7517':'#3B6D11';
-      var gapStr=hwCount>0?(gap>0?'<span style="color:'+gapColor+';font-weight:500">-'+gap+'</span>':'<span style="color:#3B6D11">0</span>'):'<span style="color:#888">—</span>';
-      var pAcell=hwCount>0?(bar(pA,'#185FA5')+'<span style="font-size:12px">'+pA+'%</span>'):'<span style="color:#888;font-size:12px">нет ДЗ</span>';
-      var daysStr=days===null?'<span style="color:#888;font-size:12px">—</span>':(days>=5?'<span style="color:#A32D2D;font-weight:700;font-size:12px">'+days+' дн. ⚠</span>':'<span style="color:#3B6D11;font-size:12px">'+days+' дн.</span>');
-      row.dataset.gcDays=days!==null?String(days):'';
-      [
-        '<td class="gc-pct" style="text-align:center;padding:4px 8px">'+bar(pV)+'<span style="font-size:12px">'+pV+'%</span></td>',
-        '<td class="gc-pct" style="text-align:center;padding:4px 8px">'+pAcell+'</td>',
-        '<td class="gc-pct" style="text-align:center;padding:4px 8px;font-size:13px">'+gapStr+'</td>',
-        '<td class="gc-pct" style="text-align:center;padding:4px 8px"><span style="padding:2px 9px;border-radius:10px;font-size:11px;white-space:nowrap;'+badge+'">'+status+'</span></td>',
-        '<td class="gc-pct" style="text-align:center;padding:4px 8px">'+daysStr+'</td>'
-      ].forEach(function(h){var tmp=document.createElement('tbody');tmp.innerHTML='<tr>'+h+'</tr>';row.appendChild(tmp.querySelector('td'));});
-    });
-    (function(){
-      var allThs=thead2.querySelectorAll('th.gc-pct');
-      var daysTh=allThs[allThs.length-1];
-      if(!daysTh)return;
-      var sortAsc=false;
-      daysTh.style.cursor='pointer';
-      daysTh.title='Нажмите для сортировки';
-      daysTh.innerHTML='Не заходил (дн.) <span style="font-size:10px">▼</span>';
-      daysTh.addEventListener('click',function(){
-        sortAsc=!sortAsc;
-        daysTh.innerHTML='Не заходил (дн.) <span style="font-size:10px">'+(sortAsc?'▲':'▼')+'</span>';
-        var tbody=table.querySelector('tbody')||table;
-        var allRows=Array.prototype.slice.call(tbody.querySelectorAll('tr.user-tr'));
-        allRows.sort(function(a,b){
-          var va=a.dataset.gcDays===''?null:parseInt(a.dataset.gcDays);
-          var vb=b.dataset.gcDays===''?null:parseInt(b.dataset.gcDays);
-          if(va===null&&vb===null)return 0;
-          if(va===null)return 1;
-          if(vb===null)return -1;
-          return sortAsc?va-vb:vb-va;
-        });
-        allRows.forEach(function(r){tbody.appendChild(r);});
-      });
-    })();
-    var old=document.getElementById('gc-csv-btn');if(old)old.remove();
-    var btn=document.createElement('button');btn.id='gc-csv-btn';
-    btn.innerHTML='Скачать CSV';
-    btn.style.cssText='margin:12px 0;padding:8px 18px;background:#185FA5;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:sans-serif;';
-    btn.onclick=function(){
-      var lines=[['Имя','Ссылка','Посетил уроков','% просмотров','Сдано ДЗ','% ДЗ','Отставание (ДЗ)','Статус','Всего уроков','Уроков с ДЗ','Не заходил (дн.)']];
-      rows.forEach(function(row){
-        var tds=row.querySelectorAll('td');if(tds.length<4)return;
-        var linkEl=row.querySelector('a');
-        var name=linkEl?linkEl.textContent.trim():'';
-        var link=linkEl?linkEl.href:'';
-        var visited=parseInt(tds[visitedIdx].textContent)||0;
-        var answered=parseInt(tds[answeredIdx].textContent)||0;
-        var gcStatus=getStatus(row);
-        var isCompleted=gcStatus.indexOf('Завершен')!==-1||gcStatus.indexOf('Завершён')!==-1;
-        var visitedShow=isCompleted?maxLessons:Math.min(visited,maxLessons);
-        var answeredShow=hwCount>0?(isCompleted?hwCount:Math.min(answered,hwCount)):0;
-        var gap=isCompleted?0:(visited===0?0:(hwCount>0?Math.max(0,hwCount-answered):0));
-        var pV=Math.round(visitedShow*100/maxLessons);
-        var pA=hwCount>0?Math.round(answeredShow*100/hwCount):null;
-        var days=null;
-        if(lastVisitIdx!==-1&&tds[lastVisitIdx]){days=daysSince(parseGcDate(tds[lastVisitIdx].textContent));}
-        var status=isCompleted?'завершён':visited===0?'не начал':pV===100&&hwCount>0&&pA<100?'Уроки пройдены, ДЗ не закрыто':gap>0?'ДЗ отстаёт от просмотров':'в процессе';
-        lines.push([name,link,visited,pV+'%',answered,hwCount>0?(pA+'%'):'н/д',gap,status,maxLessons,hwCount,days!==null?days:'н/д']);
-      });
-      var csv=lines.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
-      var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
-      a.download='progress_module_'+tid+'_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
-    };
-    var form=document.getElementById('actionForm');
-    if(form)form.insertAdjacentElement('beforebegin',btn);else document.body.prepend(btn);
-  }
-});</textarea>
-
-<textarea id="rawStatBookmarklet" style="display:none;">(function () {
+(function () {
   "use strict";
 
   if (!/\/teach\/control\/stream\/stat\/id\//.test(location.pathname)) return;
@@ -709,22 +15,12 @@ h1 {
     }
   } catch (_) {}
 
-  const state = {
-    observer: null,
-    timer: null,
-    initializedForTable: null
-  };
+  const state = { observer: null, timer: null, initializedForTable: null };
   window[STATE_KEY] = state;
 
   function destroy() {
-    if (state.observer) {
-      state.observer.disconnect();
-      state.observer = null;
-    }
-    if (state.timer) {
-      clearInterval(state.timer);
-      state.timer = null;
-    }
+    if (state.observer) { state.observer.disconnect(); state.observer = null; }
+    if (state.timer) { clearInterval(state.timer); state.timer = null; }
     const root = document.getElementById(ROOT_ID);
     if (root) root.remove();
   }
@@ -733,21 +29,12 @@ h1 {
   function init() {
     injectStyles();
     tryRender();
-
-    state.observer = new MutationObserver(() => {
-      if (state.initializedForTable) return;
-      tryRender();
-    });
+    state.observer = new MutationObserver(() => { if (state.initializedForTable) return; tryRender(); });
     state.observer.observe(document.body, { childList: true, subtree: true });
-
     let attempts = 0;
     state.timer = setInterval(() => {
       attempts += 1;
-      if (state.initializedForTable || attempts > 40) {
-        clearInterval(state.timer);
-        state.timer = null;
-        return;
-      }
+      if (state.initializedForTable || attempts > 40) { clearInterval(state.timer); state.timer = null; return; }
       tryRender();
     }, 250);
   }
@@ -755,40 +42,28 @@ h1 {
   function tryRender() {
     const sourceTable = findStatsTable();
     if (!sourceTable) return;
-
     const model = buildTableModel(sourceTable);
     if (!model.rows.length) return;
-
     renderRoot(sourceTable, model);
     renderChart(model);
     bindRoot(model);
-
     sourceTable.style.display = "none";
     state.initializedForTable = sourceTable;
-
-    if (state.observer) {
-      state.observer.disconnect();
-      state.observer = null;
-    }
-    if (state.timer) {
-      clearInterval(state.timer);
-      state.timer = null;
-    }
+    if (state.observer) { state.observer.disconnect(); state.observer = null; }
+    if (state.timer) { clearInterval(state.timer); state.timer = null; }
   }
+
   function injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
-
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
       #${ROOT_ID}{
-        --bg:#fff;
-        --panel:#fff;
+        --panel:rgba(255,252,246,.92);
         --ink:#11224f;
         --muted:#5f6780;
         --line:rgba(17,34,79,.12);
         --blue:#2c63ff;
-        --orange:#ff6a13;
         --green:#157f55;
         --rose:#c44536;
         --amber:#b86b00;
@@ -797,254 +72,77 @@ h1 {
         color:var(--ink);
         font-family:"Avenir Next","Segoe UI",Arial,sans-serif;
       }
-
       #${ROOT_ID} *, #${ROOT_ID} *::before, #${ROOT_ID} *::after { box-sizing:border-box; }
       #${ROOT_ID} h1,#${ROOT_ID} h2,#${ROOT_ID} h3,#${ROOT_ID} p { margin:0; }
-
       #${ROOT_ID} .page{
-        background:#fff;
-        border-radius:24px;
-        padding:14px;
+        background: radial-gradient(circle at top left, rgba(44,99,255,.14), transparent 32%),
+          radial-gradient(circle at 85% 12%, rgba(255,106,19,.13), transparent 24%),
+          linear-gradient(180deg,#fbf8f1 0%,#f5f2ea 100%);
+        border-radius:24px; padding:14px;
       }
-
-      #${ROOT_ID} .panel{
-        background:var(--panel);
-        border:1px solid rgba(17,34,79,.1);
-        border-radius:20px;
-        box-shadow:var(--shadow);
-      }
-
-      #${ROOT_ID} .hero{
-        display:grid;
-        grid-template-columns:1.4fr .95fr;
-        gap:16px;
-        margin-bottom:16px;
-      }
-
-      #${ROOT_ID} .hero-main{padding:24px;}
-      #${ROOT_ID} .eyebrow{
-        display:inline-flex;
-        align-items:center;
-        gap:8px;
-        padding:6px 10px;
-        border-radius:999px;
-        background:rgba(17,34,79,.06);
-        color:var(--muted);
-        font-size:12px;
-        text-transform:uppercase;
-        letter-spacing:.04em;
-      }
-
-      #${ROOT_ID} .hero-title{
-        margin-top:14px;
-        font-size:clamp(30px,4vw,54px);
-        line-height:.95;
-        letter-spacing:-.04em;
-      }
-
-      #${ROOT_ID} .hero-copy{
-        margin-top:12px;
-        color:var(--muted);
-        font-size:16px;
-        line-height:1.5;
-        max-width:760px;
-      }
-
-      #${ROOT_ID} .hero-side{
-        padding:20px;
-        display:grid;
-        gap:14px;
-        background:linear-gradient(180deg,rgba(17,34,79,.98),rgba(25,48,105,.98));
-        color:#f8f6f2;
-      }
-
-      #${ROOT_ID} .side-title{
-        font-size:12px;
-        text-transform:uppercase;
-        letter-spacing:.1em;
-        color:rgba(255,255,255,.72);
-      }
-
-      #${ROOT_ID} .side-value{
-        font-size:clamp(38px,4vw,64px);
-        line-height:.92;
-        font-weight:700;
-        letter-spacing:-.04em;
-      }
-
-      #${ROOT_ID} .side-copy{
-        color:rgba(255,255,255,.78);
-        font-size:14px;
-        line-height:1.45;
-      }
-
-      #${ROOT_ID} .hero-grid{
-        display:grid;
-        grid-template-columns:repeat(2,minmax(0,1fr));
-        gap:10px;
-      }
-
-      #${ROOT_ID} .hero-mini{
-        padding:10px 12px;
-        border-radius:12px;
-        background:rgba(255,255,255,.08);
-        border:1px solid rgba(255,255,255,.08);
-      }
-
-      #${ROOT_ID} .hero-mini strong{
-        display:block;
-        font-size:20px;
-        letter-spacing:-.02em;
-      }
-
-      #${ROOT_ID} .hero-mini span{
-        display:block;
-        margin-top:4px;
-        font-size:12px;
-        color:rgba(255,255,255,.72);
-        line-height:1.35;
-      }
-
+      #${ROOT_ID} .panel{ background:var(--panel); border:1px solid rgba(255,255,255,.8); border-radius:20px; box-shadow:var(--shadow); backdrop-filter:blur(10px); }
+      #${ROOT_ID} .hero{ display:grid; grid-template-columns:1.15fr .95fr; gap:16px; margin-bottom:16px; align-items:stretch; }
+      #${ROOT_ID} .hero-side{ padding:20px; display:grid; gap:14px; background:linear-gradient(180deg,rgba(17,34,79,.98),rgba(25,48,105,.98)); color:#f8f6f2; border-radius:20px; }
+      #${ROOT_ID} .side-title{ font-size:12px; text-transform:uppercase; letter-spacing:.1em; color:rgba(255,255,255,.72); }
+      #${ROOT_ID} .side-value{ font-size:clamp(38px,4vw,64px); line-height:.92; font-weight:700; letter-spacing:-.04em; }
+      #${ROOT_ID} .side-copy{ color:rgba(255,255,255,.78); font-size:14px; line-height:1.45; }
+      #${ROOT_ID} .hero-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+      #${ROOT_ID} .hero-mini{ padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.08); }
+      #${ROOT_ID} .hero-mini strong{ display:block; font-size:20px; letter-spacing:-.02em; }
+      #${ROOT_ID} .hero-mini span{ display:block; margin-top:4px; font-size:12px; color:rgba(255,255,255,.72); line-height:1.35; }
       #${ROOT_ID} .hero-insights{ display:grid; gap:8px; }
       #${ROOT_ID} .hero-insight-title{ font-size:13px; line-height:1.25; }
-
-      #${ROOT_ID} .metrics{
-        display:grid;
-        grid-template-columns:repeat(4,minmax(0,1fr));
-        gap:12px;
-        margin-bottom:16px;
-      }
-
-      #${ROOT_ID} .metric{ padding:14px 16px; }
+      #${ROOT_ID} .hero-metrics{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+      #${ROOT_ID} .metric{ padding:14px 16px; min-width:0; }
       #${ROOT_ID} .metric-label{ font-size:12px; color:var(--muted); margin-bottom:8px; }
       #${ROOT_ID} .metric-value{ font-size:30px; line-height:.95; letter-spacing:-.03em; font-weight:700; }
       #${ROOT_ID} .metric-note{ margin-top:8px; color:var(--muted); font-size:12px; line-height:1.4; }
-
-      #${ROOT_ID} .layout{
-        display:grid;
-        grid-template-columns:1fr;
-        gap:16px;
-        margin-bottom:16px;
-      }
-
-      #${ROOT_ID} .chart-card { padding:16px; }
-
-      #${ROOT_ID} .card-head{
-        display:flex;
-        justify-content:space-between;
-        align-items:flex-start;
-        gap:10px;
-        margin-bottom:10px;
-      }
-
+      #${ROOT_ID} .layout{ display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:16px; }
+      #${ROOT_ID} .chart-card{ padding:16px; }
+      #${ROOT_ID} .card-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px; }
       #${ROOT_ID} .card-title{ font-size:24px; letter-spacing:-.03em; line-height:1; }
       #${ROOT_ID} .card-subtitle{ margin-top:8px; color:var(--muted); font-size:13px; line-height:1.45; }
-
-      #${ROOT_ID} .legend{ display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:12px; }
+      #${ROOT_ID} .legend{ display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:12px; margin-bottom:12px; }
       #${ROOT_ID} .legend span{ display:inline-flex; align-items:center; gap:6px; }
-      #${ROOT_ID} .swatch{ width:10px; height:10px; border-radius:50%; display:inline-block; }
-
-      #${ROOT_ID} .chart-wrap{
-        border-radius:14px;
-        padding:10px 10px 0;
-        background:linear-gradient(180deg,rgba(17,34,79,.03),rgba(17,34,79,0));
-        border:1px solid rgba(17,34,79,.06);
-      }
-
-      #${ROOT_ID} svg{ width:100%; height:auto; display:block; }
-
+      #${ROOT_ID} .swatch{ width:12px; height:12px; border-radius:3px; display:inline-block; flex-shrink:0; }
+      #${ROOT_ID} .chart-wrap{ border-radius:14px; padding:16px 16px 0; background:linear-gradient(180deg,rgba(17,34,79,.03),rgba(17,34,79,0)); border:1px solid rgba(17,34,79,.06); overflow-x:auto; }
+      #${ROOT_ID} svg{ display:block; }
       #${ROOT_ID} .table-card{ padding:16px; }
       #${ROOT_ID} table{ width:100%; border-collapse:collapse; }
-      #${ROOT_ID} th,#${ROOT_ID} td{
-        padding:10px;
-        text-align:left;
-        border-bottom:1px solid rgba(17,34,79,.08);
-        vertical-align:top;
-        font-size:13px;
-      }
-
-      #${ROOT_ID} th{
-        font-size:11px;
-        text-transform:uppercase;
-        letter-spacing:.05em;
-        color:var(--muted);
-      }
-
+      #${ROOT_ID} th,#${ROOT_ID} td{ padding:10px; text-align:left; border-bottom:1px solid rgba(17,34,79,.08); vertical-align:top; font-size:13px; }
+      #${ROOT_ID} th{ font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
       #${ROOT_ID} .lesson-link{ color:#185fa5; text-decoration:none; }
       #${ROOT_ID} .lesson-link:hover{ text-decoration:underline; }
       #${ROOT_ID} .small{ display:block; margin-top:5px; font-size:11px; color:var(--muted); line-height:1.35; }
-
-      #${ROOT_ID} .badge{
-        display:inline-flex;
-        align-items:center;
-        padding:4px 8px;
-        border-radius:999px;
-        font-size:11px;
-        font-weight:700;
-      }
-
+      #${ROOT_ID} .badge{ display:inline-flex; align-items:center; padding:4px 8px; border-radius:999px; font-size:11px; font-weight:700; }
       #${ROOT_ID} .good{ background:rgba(21,127,85,.12); color:var(--green); }
       #${ROOT_ID} .warn{ background:rgba(184,107,0,.12); color:var(--amber); }
       #${ROOT_ID} .bad{ background:rgba(196,69,54,.12); color:var(--rose); }
       #${ROOT_ID} .up{ background:rgba(44,99,255,.14); color:var(--blue); }
       #${ROOT_ID} .muted{ color:var(--muted); }
-
-      #${ROOT_ID} .btn{
-        appearance:none;
-        border:1px solid rgba(17,34,79,.1);
-        border-radius:999px;
-        background:#fff;
-        color:var(--ink);
-        padding:8px 12px;
-        cursor:pointer;
-        font-size:12px;
-      }
-
-      @media (max-width:1120px){
-        #${ROOT_ID} .hero { grid-template-columns:1fr; }
-        #${ROOT_ID} .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
-      }
-
-      @media (max-width:720px){
-        #${ROOT_ID} .page { padding:10px; }
-        #${ROOT_ID} .hero-main,
-        #${ROOT_ID} .hero-side,
-        #${ROOT_ID} .chart-card,
-        #${ROOT_ID} .table-card,
-        #${ROOT_ID} .metric { padding:14px; }
-
-        #${ROOT_ID} .hero-grid,
-        #${ROOT_ID} .metrics { grid-template-columns:1fr; }
-      }
+      #${ROOT_ID} .btn{ appearance:none; border:1px solid rgba(17,34,79,.1); border-radius:999px; background:#fff; color:var(--ink); padding:8px 12px; cursor:pointer; font-size:12px; }
+      @media (max-width:1120px){ #${ROOT_ID} .hero{ grid-template-columns:1fr; } #${ROOT_ID} .hero-metrics{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+      @media (max-width:720px){ #${ROOT_ID} .page{ padding:10px; } #${ROOT_ID} .hero-side, #${ROOT_ID} .chart-card, #${ROOT_ID} .table-card, #${ROOT_ID} .metric{ padding:14px; } #${ROOT_ID} .hero-grid, #${ROOT_ID} .hero-metrics{ grid-template-columns:1fr; } }
     `;
     document.head.appendChild(style);
   }
 
   function findStatsTable() {
     const tables = Array.from(document.querySelectorAll("table"));
-
-    const native = tables.find((table) => {
-      if (table.id === INTERNAL_TABLE_ID) return false;
-      if (table.closest(`#${ROOT_ID}`)) return false;
-      return table.classList.contains("lessons-table");
-    });
+    const native = tables.find(t => !t.id !== INTERNAL_TABLE_ID && !t.closest(`#${ROOT_ID}`) && t.classList.contains("lessons-table"));
     if (native) return native;
-
-    return tables.find((table) => {
-      if (table.id === INTERNAL_TABLE_ID) return false;
-      if (table.closest(`#${ROOT_ID}`)) return false;
-
-      const headerRow = table.querySelector("thead tr");
-      if (!headerRow) return false;
-      const headers = getHeaderColumns(headerRow).map((c) => normalizeText(c.text));
-      return headers.includes("урок") && headers.includes("зашли") && headers.includes("ответили");
+    return tables.find(t => {
+      if (t.id === INTERNAL_TABLE_ID || t.closest(`#${ROOT_ID}`)) return false;
+      const hr = t.querySelector("thead tr");
+      if (!hr) return false;
+      const h = getHeaderColumns(hr).map(c => normalizeText(c.text));
+      return h.includes("урок") && h.includes("зашли") && h.includes("ответили");
     }) || null;
   }
 
   function getHeaderColumns(headerRow) {
-    const cols = [];
-    let colIndex = 0;
-    Array.from(headerRow.cells).forEach((cell) => {
+    const cols = []; let colIndex = 0;
+    Array.from(headerRow.cells).forEach(cell => {
       const text = normalizeSpace(cell.textContent);
       const span = Math.max(1, Number(cell.colSpan) || 1);
       cols.push({ text, index: colIndex, span });
@@ -1056,16 +154,14 @@ h1 {
   function buildTableModel(table) {
     const headerRow = table.querySelector("thead tr");
     const headerCols = getHeaderColumns(headerRow);
-
     const indexes = {
       status: indexOfHeader(headerCols, "статус"),
       entered: indexOfHeader(headerCols, "зашли"),
       answered: indexOfHeader(headerCols, "ответили"),
       passed: indexOfHeader(headerCols, "прошли")
     };
-
-    const bodyRows = Array.from(table.querySelectorAll("tr")).filter((tr) => !tr.closest("thead"));
-    const rows = bodyRows.map((row) => parseRow(row, indexes)).filter(Boolean);
+    const bodyRows = Array.from(table.querySelectorAll("tr")).filter(tr => !tr.closest("thead"));
+    const rows = bodyRows.map(row => parseRow(row, indexes)).filter(Boolean);
 
     rows.forEach((item, i) => {
       const prev = i > 0 ? rows[i - 1] : null;
@@ -1079,42 +175,18 @@ h1 {
 
     const first = rows[0] || null;
     const last = rows.length ? rows[rows.length - 1] : null;
-
-    const answerRows = rows.filter((r) => r.answerRate !== null);
-    const totalAnswerRate = answerRows.length
-      ? Math.round(answerRows.reduce((acc, r) => acc + r.answerRate, 0) / answerRows.length)
-      : null;
-
+    const answerRows = rows.filter(r => r.answerRate !== null);
+    const totalAnswerRate = answerRows.length ? Math.round(answerRows.reduce((a, r) => a + r.answerRate, 0) / answerRows.length) : null;
     const largestDrop = rows.reduce((acc, item, i) => {
       if (i === 0 || item.delta === null || item.delta >= acc.value) return acc;
-      return {
-        value: item.delta,
-        index: i,
-        fromTitle: rows[i - 1].title,
-        title: item.title
-      };
+      return { value: item.delta, index: i, fromTitle: rows[i - 1].title, title: item.title };
     }, { value: 0, index: 0, fromTitle: "", title: "" });
-
-    const completionRate = first && last && first.entered
-      ? Math.round((last.entered / first.entered) * 100)
-      : 0;
-
-    const startAnswerRate = first && first.answerRate !== null ? first.answerRate : null;
-    const finalAnswerRate = last && last.answerRate !== null ? last.answerRate : null;
-
-    const averageLessonShare = first && first.entered
-      ? Math.round((rows.reduce((sum, r) => sum + r.entered, 0) / rows.length / first.entered) * 100)
-      : 0;
+    const completionRate = first && last && first.entered ? Math.round((last.entered / first.entered) * 100) : 0;
 
     return {
-      rows,
-      first,
-      last,
-      completionRate,
-      totalAnswerRate,
-      startAnswerRate,
-      finalAnswerRate,
-      averageLessonShare,
+      rows, first, last, completionRate, totalAnswerRate,
+      startAnswerRate: first && first.answerRate !== null ? first.answerRate : null,
+      finalAnswerRate: last && last.answerRate !== null ? last.answerRate : null,
       largestDrop
     };
   }
@@ -1122,64 +194,34 @@ h1 {
   function parseRow(row, indexes) {
     const cells = row.cells;
     if (!cells || !cells.length || indexes.entered < 0 || !cells[indexes.entered]) return null;
-
-    const lessonCell =
-      row.querySelector("td.main-info") ||
-      Array.from(cells).find((c) => c.querySelector("a")) ||
-      cells[0];
-
+    const lessonCell = row.querySelector("td.main-info") || Array.from(cells).find(c => c.querySelector("a")) || cells[0];
     const lessonLink = lessonCell ? lessonCell.querySelector("a") : null;
     const title = normalizeSpace(lessonLink ? lessonLink.textContent : lessonCell ? lessonCell.textContent : "");
     if (!title) return null;
-
     const href = lessonLink ? lessonLink.href : "";
     const status = indexes.status >= 0 && cells[indexes.status] ? normalizeSpace(cells[indexes.status].textContent) : "";
     const enteredMetric = readMetricCell(cells[indexes.entered]);
     const answeredMetric = indexes.answered >= 0 && cells[indexes.answered] ? readMetricCell(cells[indexes.answered]) : emptyMetric();
     const passedMetric = indexes.passed >= 0 && cells[indexes.passed] ? readMetricCell(cells[indexes.passed]) : emptyMetric();
-
     if (enteredMetric.value === null) return null;
-
     return {
-      title,
-      href,
-      status,
+      title, href, status,
       entered: enteredMetric.value,
-      answered: answeredMetric.value,
-      answeredRaw: answeredMetric.raw,
-      passed: passedMetric.value,
-      passedRaw: passedMetric.raw,
-      delta: null,
-      deltaPct: null,
-      answerRate: null,
-      passedRate: null,
-      answerGap: null,
-      passedGap: null
+      answered: answeredMetric.value, answeredRaw: answeredMetric.raw,
+      passed: passedMetric.value, passedRaw: passedMetric.raw,
+      delta: null, deltaPct: null, answerRate: null, passedRate: null, answerGap: null, passedGap: null
     };
   }
 
   function buildTopInsights(model) {
     const items = [];
-
     if (model.largestDrop.value < 0) {
-      items.push({
-        title: "Провал в связке уроков",
-        text: `Максимальная просадка ${formatInt(Math.abs(model.largestDrop.value))} чел. между «${trimLabel(model.largestDrop.fromTitle, 36)}» и «${trimLabel(model.largestDrop.title, 36)}».`
-      });
+      items.push({ title: "Провал в связке уроков", text: `Максимальная просадка ${formatInt(Math.abs(model.largestDrop.value))} чел. между «${trimLabel(model.largestDrop.fromTitle, 36)}» и «${trimLabel(model.largestDrop.title, 36)}».` });
     }
-
-    const lowAnswer = model.rows
-      .filter((r) => r.answerRate !== null && r.answerRate < 70)
-      .sort((a, b) => a.answerRate - b.answerRate)
-      .slice(0, 2);
-
+    const lowAnswer = model.rows.filter(r => r.answerRate !== null && r.answerRate < 70).sort((a, b) => a.answerRate - b.answerRate).slice(0, 2);
     if (lowAnswer.length) {
-      items.push({
-        title: "Низкая вовлеченность в задания",
-        text: lowAnswer.map((r) => `«${trimLabel(r.title, 32)}» (${r.answerRate}%)`).join(", ")
-      });
+      items.push({ title: "Низкая вовлеченность в задания", text: lowAnswer.map(r => `«${trimLabel(r.title, 32)}» (${r.answerRate}%)`).join(", ") });
     }
-
     return items;
   }
 
@@ -1187,28 +229,40 @@ h1 {
     let root = document.getElementById(ROOT_ID);
     const parent = sourceTable.parentNode;
     if (!parent) return;
-
     if (!root) {
       root = document.createElement("section");
       root.id = ROOT_ID;
       const next = sourceTable.nextSibling;
-      if (next) parent.insertBefore(root, next);
-      else parent.appendChild(root);
+      if (next) parent.insertBefore(root, next); else parent.appendChild(root);
     } else if (root.parentNode !== parent) {
       const next = sourceTable.nextSibling;
-      if (next) parent.insertBefore(root, next);
-      else parent.appendChild(root);
+      if (next) parent.insertBefore(root, next); else parent.appendChild(root);
     }
-
     root.dataset.bound = "0";
     root._model = model;
 
     const metricItems = buildMetricItems(model);
+    const topInsights = buildTopInsights(model);
+    const hasAnswered = model.rows.some(r => r.answered !== null);
 
     root.innerHTML = `
       <div class="page">
-        <section class="metrics">
-          ${metricItems.map(renderMetricCard).join("")}
+        <section class="hero">
+          <aside class="panel hero-side">
+            <p class="side-title">Ключевой вывод</p>
+            <div>
+              <div class="side-value">${model.completionRate}%</div>
+              <p class="side-copy">До последнего урока дошли ${formatInt(model.last ? model.last.entered : 0)} из ${formatInt(model.first ? model.first.entered : 0)} стартовавших.</p>
+            </div>
+            <div class="hero-grid">
+              <div class="hero-mini"><strong>${model.largestDrop.value ? formatInt(Math.abs(model.largestDrop.value)) : "0"}</strong><span>максимальная потеря между соседними уроками</span></div>
+              <div class="hero-mini"><strong>${model.totalAnswerRate === null ? "—" : `${model.totalAnswerRate}%`}</strong><span>средняя конверсия в ответ</span></div>
+              <div class="hero-mini"><strong>${model.startAnswerRate === null ? "—" : `${model.startAnswerRate}%`}</strong><span>ответили на старте</span></div>
+              <div class="hero-mini"><strong>${model.finalAnswerRate === null ? "—" : `${model.finalAnswerRate}%`}</strong><span>ответили в финале</span></div>
+            </div>
+            ${topInsights.length ? `<div class="hero-insights">${topInsights.map(it => `<div class="hero-mini"><strong class="hero-insight-title">${escapeHtml(it.title)}</strong><span>${escapeHtml(it.text)}</span></div>`).join("")}</div>` : ""}
+          </aside>
+          <div class="hero-metrics">${metricItems.map(renderMetricCard).join("")}</div>
         </section>
 
         <section class="layout">
@@ -1216,38 +270,26 @@ h1 {
             <div class="card-head">
               <div>
                 <h2 class="card-title">Воронка уроков</h2>
-                <p class="card-subtitle">Подсветка отмечает переходы с наибольшей просадкой.</p>
+                <p class="card-subtitle">Красным выделены опасные провалы в заходах и сдаче ДЗ.</p>
               </div>
-              <div>
-                <button type="button" class="btn" data-role="csv">Экспорт CSV</button>
-              </div>
+              <button type="button" class="btn" data-role="csv">Экспорт CSV</button>
             </div>
             <div class="legend">
-              <span><i class="swatch" style="background:var(--blue)"></i>Зашли</span>
-              ${model.rows.some((r) => r.answered !== null) ? '<span><i class="swatch" style="background:var(--orange)"></i>Ответили</span>' : ""}
+              <span><i class="swatch" style="background:#2c63ff"></i>Зашли</span>
+              ${hasAnswered ? '<span><i class="swatch" style="background:rgba(44,99,255,.35);border:1.5px solid #2c63ff"></i>Ответили</span>' : ""}
+              <span><i class="swatch" style="background:#c44536"></i>Провал заходов</span>
+              ${hasAnswered ? '<span><i class="swatch" style="background:rgba(196,69,54,.38);border:1.5px solid #c44536"></i>Провал ДЗ</span>' : ""}
             </div>
             <div class="chart-wrap">
-              <svg id="${APP_ID}-chart" viewBox="0 0 980 430" aria-label="Воронка уроков"></svg>
+              <svg id="${APP_ID}-chart" aria-label="Воронка уроков"></svg>
             </div>
           </article>
         </section>
 
         <section class="panel table-card">
           <table id="${INTERNAL_TABLE_ID}">
-            <thead>
-              <tr>
-                <th>Урок</th>
-                <th>Зашли</th>
-                <th>Ответили</th>
-                <th>Не ответили</th>
-                <th>Конверсия ответа</th>
-                <th>Динамика</th>
-                <th>Сигнал</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${model.rows.map((row, i) => renderLessonRow(row, i)).join("")}
-            </tbody>
+            <thead><tr><th>Урок</th><th>Зашли</th><th>Ответили</th><th>Не ответили</th><th>Конверсия ответа</th><th>Динамика</th><th>Сигнал</th></tr></thead>
+            <tbody>${model.rows.map((row, i) => renderLessonRow(row, i)).join("")}</tbody>
           </table>
         </section>
       </div>
@@ -1257,16 +299,11 @@ h1 {
   function buildMetricItems(model) {
     const first = model.first ? model.first.entered : 0;
     const last = model.last ? model.last.entered : 0;
-    const lost = Math.max(0, first - last);
-    const largestDropText = model.largestDrop.value
-      ? `${formatInt(Math.abs(model.largestDrop.value))} чел.`
-      : "0 чел.";
-
     return [
       { label: "Стартовали", value: formatInt(first), note: "Базовая аудитория, от которой считаем реальную воронку." },
       { label: "Дошли до финала", value: formatInt(last), note: `${model.completionRate}% от первого урока.` },
-      { label: "Потеря по пути", value: formatInt(lost), note: "Разница между стартом и финалом." },
-      { label: "Самая слабая связка", value: largestDropText, note: model.largestDrop.value ? "Переход с максимальной просадкой внимания." : "Резкой просадки не обнаружено." }
+      { label: "Потеря по пути", value: formatInt(Math.max(0, first - last)), note: "Разница между стартом и финалом." },
+      { label: "Самая слабая связка", value: model.largestDrop.value ? `${formatInt(Math.abs(model.largestDrop.value))} чел.` : "0 чел.", note: model.largestDrop.value ? "Переход с максимальной просадкой внимания." : "Резкой просадки не обнаружено." }
     ];
   }
 
@@ -1277,23 +314,16 @@ h1 {
   function renderLessonRow(row, index) {
     const signal = getSignal(row);
     const lessonLabel = row.href ? `<a class="lesson-link" href="${escapeHtml(row.href)}">${escapeHtml(row.title)}</a>` : escapeHtml(row.title);
-    const answeredDisplay = row.answered !== null ? formatInt(row.answered) : escapeHtml(row.answeredRaw || "—");
-    const notAnsweredDisplay = row.answerGap !== null ? formatInt(row.answerGap) : "—";
-    const conversionDisplay = row.answerRate === null ? "—" : `${row.answerRate}%`;
-    const diffDisplay = index === 0 || row.delta === null ? "—" : `${row.delta} чел. (${row.deltaPct > 0 ? "+" : ""}${row.deltaPct}%)`;
     const detail = `Статус: ${escapeHtml(row.status || "—")} · Прошли: ${row.passed !== null ? formatInt(row.passed) : escapeHtml(row.passedRaw || "—")}`;
-
-    return `
-      <tr>
-        <td>${lessonLabel}<span class="small">${detail}</span></td>
-        <td>${formatInt(row.entered)}</td>
-        <td>${answeredDisplay}</td>
-        <td>${notAnsweredDisplay}</td>
-        <td>${conversionDisplay}</td>
-        <td class="${index === 0 || row.delta === null || row.delta >= 0 ? "muted" : ""}">${diffDisplay}</td>
-        <td><span class="badge ${signal.className}">${signal.label}</span></td>
-      </tr>
-    `;
+    return `<tr>
+      <td>${lessonLabel}<span class="small">${detail}</span></td>
+      <td>${formatInt(row.entered)}</td>
+      <td>${row.answered !== null ? formatInt(row.answered) : escapeHtml(row.answeredRaw || "—")}</td>
+      <td>${row.answerGap !== null ? formatInt(row.answerGap) : "—"}</td>
+      <td>${row.answerRate === null ? "—" : `${row.answerRate}%`}</td>
+      <td class="${index === 0 || row.delta === null || row.delta >= 0 ? "muted" : ""}">${index === 0 || row.delta === null ? "—" : `${row.delta} чел. (${row.deltaPct > 0 ? "+" : ""}${row.deltaPct}%)`}</td>
+      <td><span class="badge ${signal.className}">${signal.label}</span></td>
+    </tr>`;
   }
 
   function getSignal(row) {
@@ -1301,124 +331,109 @@ h1 {
     if (row.delta !== null && row.delta > 0) return { className: "up", label: "Прирост" };
     if (row.delta !== null && row.delta <= -30) return { className: "bad", label: "Проверить переход" };
     if (row.delta !== null && row.delta <= -15) return { className: "warn", label: "Наблюдать" };
-
-    if (row.answerRate !== null && row.answerRate < 70) {
-      if (row.delta === null || row.delta < 0) {
-        return { className: "warn", label: "Падает вовлечение" };
-      }
-      return { className: "good", label: "Стабильно" };
-    }
-
+    if (row.answerRate !== null && row.answerRate < 70) return { className: "warn", label: row.delta < 0 ? "Падает вовлечение" : "Стабильно" };
     return { className: "good", label: "Стабильно" };
   }
 
   function renderChart(model) {
     const svg = document.getElementById(`${APP_ID}-chart`);
-    if (!svg) return;
+    if (!svg || !model.rows.length) return;
 
-    const width = 980;
-    const height = 430;
-    const margin = { top: 18, right: 20, bottom: 90, left: 58 };
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    const BAR_W = 32;
+    const BAR_GAP = 4;
+    const GROUP_GAP = 14;
+    const marginL = 52;
+    const marginR = 24;
+    const marginT = 20;
+    const marginB = 86;
+    const chartH = 300;
+    const innerH = chartH - marginT - marginB;
 
-    const numericValues = model.rows.flatMap((item) => [item.entered, item.answered].filter((v) => v !== null));
-    const yMax = roundUp(Math.max.apply(null, numericValues.concat([100])), 20);
-    const yMin = Math.max(0, roundDown(Math.min.apply(null, numericValues.concat([0])) - 40, 20));
-    const stepX = model.rows.length > 1 ? innerWidth / (model.rows.length - 1) : innerWidth;
-    const ticks = buildTicks(yMin, yMax, 6);
+    const n = model.rows.length;
+    const hasAnswered = model.rows.some(r => r.answered !== null);
+    const groupW = hasAnswered ? BAR_W * 2 + BAR_GAP : BAR_W;
+    const totalW = Math.max(600, marginL + n * groupW + (n - 1) * GROUP_GAP + marginR);
 
-    const x = (index) => margin.left + index * stepX;
-    const y = (value) => {
-      if (value === null) return null;
-      const ratio = (value - yMin) / Math.max(yMax - yMin, 1);
-      return margin.top + innerHeight - ratio * innerHeight;
-    };
+    svg.setAttribute("width", totalW);
+    svg.setAttribute("height", chartH);
+    svg.setAttribute("viewBox", `0 0 ${totalW} ${chartH}`);
 
-    const pathFor = (key) => {
-      let started = false;
-      return model.rows.map((item, idx) => {
-        const v = item[key];
-        if (v === null) {
-          started = false;
-          return "";
-        }
-        const cmd = started ? "L" : "M";
-        started = true;
-        return `${cmd}${x(idx).toFixed(2)},${y(v).toFixed(2)}`;
-      }).join(" ");
-    };
+    const allVals = model.rows.flatMap(r => [r.entered, r.answered].filter(v => v !== null));
+    const yMax = Math.max(10, Math.ceil(Math.max(...allVals) / 10) * 10);
+    const yScale = v => marginT + innerH - (v / yMax) * innerH;
+    const xGroup = i => marginL + i * (groupW + GROUP_GAP);
 
-    const gridLines = ticks.map((value) => `
-      <g>
-        <line x1="${margin.left}" x2="${width - margin.right}" y1="${y(value)}" y2="${y(value)}" stroke="rgba(17,34,79,.12)" stroke-width="1"/>
-        <text x="${margin.left - 14}" y="${y(value) + 5}" text-anchor="end" font-size="12" fill="#5f6780">${formatInt(value)}</text>
-      </g>
-    `).join("");
+    // Сетка
+    let out = "";
+    const tickCount = 5;
+    for (let t = 0; t <= tickCount; t++) {
+      const val = Math.round((yMax * t) / tickCount);
+      const yy = yScale(val);
+      out += `<line x1="${marginL}" y1="${yy}" x2="${totalW - marginR}" y2="${yy}" stroke="rgba(17,34,79,.08)" stroke-width="1"/>`;
+      out += `<text x="${marginL - 8}" y="${yy + 4}" text-anchor="end" font-size="11" fill="#5f6780">${formatInt(val)}</text>`;
+    }
 
-    const areas = model.rows.slice(1).map((lesson, i) => {
-      const diff = lesson.delta;
-      if (diff === null || diff > -15) return "";
-      const startX = x(i);
-      const endX = x(i + 1);
-      const fill = diff <= -30 ? "rgba(196,69,54,.08)" : "rgba(255,106,19,.08)";
-      return `<rect x="${startX}" y="${margin.top}" width="${endX - startX}" height="${innerHeight}" fill="${fill}"></rect>`;
-    }).join("");
+    // Столбцы и подписи
+    model.rows.forEach((row, i) => {
+      const gx = xGroup(i);
 
-    const labels = model.rows.map((lesson, idx) => `
-      <text x="${x(idx)}" y="${height - 28}" transform="rotate(-28 ${x(idx)} ${height - 28})" font-size="12" fill="#5f6780">${escapeHtml(trimLabel(lesson.title, 28))}</text>
-    `).join("");
+      // Определяем опасность
+      const dangerEntered = row.deltaPct !== null && row.deltaPct <= -15;
+      const dangerAnswer = row.answerRate !== null && row.answerRate < 70;
 
-    const enteredMarkers = model.rows.map((lesson, idx) => `<circle cx="${x(idx)}" cy="${y(lesson.entered)}" r="4.5" fill="#2c63ff"></circle>`).join("");
-    const answeredMarkers = model.rows.map((lesson, idx) => lesson.answered === null ? "" : `<circle cx="${x(idx)}" cy="${y(lesson.answered)}" r="4.5" fill="#ff6a13"></circle>`).join("");
+      const colorEntered = dangerEntered ? "#c44536" : "#2c63ff";
+      const colorAnswered = dangerAnswer ? "rgba(196,69,54,.38)" : "rgba(44,99,255,.38)";
+      const strokeAnswered = dangerAnswer ? "#c44536" : "#2c63ff";
 
-    svg.innerHTML = `
-      ${gridLines}
-      ${areas}
-      <path d="${pathFor("entered")}" fill="none" stroke="#2c63ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
-      ${model.rows.some((item) => item.answered !== null) ? `<path d="${pathFor("answered")}" fill="none" stroke="#ff6a13" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>` : ""}
-      ${enteredMarkers}
-      ${answeredMarkers}
-      ${labels}
-    `;
+      // Столбец «Зашли»
+      const hE = Math.max(3, (row.entered / yMax) * innerH);
+      const yE = marginT + innerH - hE;
+      out += `<rect x="${gx}" y="${yE}" width="${BAR_W}" height="${hE}" rx="6" ry="6" fill="${colorEntered}"/>`;
+      out += `<text x="${gx + BAR_W / 2}" y="${yE - 5}" text-anchor="middle" font-size="10" font-weight="700" fill="${colorEntered}">${formatInt(row.entered)}</text>`;
+
+      // Столбец «Ответили»
+      if (hasAnswered && row.answered !== null) {
+        const hA = Math.max(3, (row.answered / yMax) * innerH);
+        const yA = marginT + innerH - hA;
+        const ax = gx + BAR_W + BAR_GAP;
+        out += `<rect x="${ax}" y="${yA}" width="${BAR_W}" height="${hA}" rx="6" ry="6" fill="${colorAnswered}" stroke="${strokeAnswered}" stroke-width="1.5"/>`;
+        out += `<text x="${ax + BAR_W / 2}" y="${yA - 5}" text-anchor="middle" font-size="10" font-weight="700" fill="${strokeAnswered}">${formatInt(row.answered)}</text>`;
+      }
+
+      // Подпись урока
+      const lx = gx + groupW / 2;
+      const ly = marginT + innerH + 14;
+      out += `<text x="${lx}" y="${ly}" transform="rotate(-32 ${lx} ${ly})" text-anchor="end" font-size="11" fill="#5f6780">${escapeHtml(trimLabel(row.title, 20))}</text>`;
+    });
+
+    svg.innerHTML = out;
   }
 
   function bindRoot(model) {
     const root = document.getElementById(ROOT_ID);
     if (!root || root.dataset.bound === "1") return;
-
-    root.addEventListener("click", (event) => {
-      const btn = event.target.closest('button[data-role="csv"]');
+    root.addEventListener("click", e => {
+      const btn = e.target.closest('button[data-role="csv"]');
       if (!btn) return;
       downloadCsv(root._model || model);
     });
-
     root.dataset.bound = "1";
   }
 
   function downloadCsv(model) {
-    const rows = [[
-      "Урок", "Статус", "Зашли", "Ответили", "Не ответили", "Прошли",
-      "Конверсия ответа", "Конверсия прохождения", "Динамика", "Сигнал"
-    ]];
-
+    const rows = [["Урок","Статус","Зашли","Ответили","Не ответили","Прошли","Конверсия ответа","Конверсия прохождения","Динамика","Сигнал"]];
     model.rows.forEach((item, i) => {
       const signal = getSignal(item);
-      rows.push([
-        item.title,
-        item.status || "",
-        item.entered,
+      rows.push([item.title, item.status || "", item.entered,
         item.answered !== null ? item.answered : item.answeredRaw || "",
         item.answerGap !== null ? item.answerGap : "—",
         item.passed !== null ? item.passed : item.passedRaw || "",
         item.answerRate === null ? "—" : `${item.answerRate}%`,
         item.passedRate === null ? "—" : `${item.passedRate}%`,
         i === 0 || item.delta === null ? "—" : `${item.delta} (${item.deltaPct > 0 ? "+" : ""}${item.deltaPct}%)`,
-        signal.label
-      ]);
+        signal.label]);
     });
-
-    const csv = rows.map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
     const link = document.createElement("a");
     link.href = `data:text/csv;charset=utf-8,\uFEFF${encodeURIComponent(csv)}`;
     link.download = `lesson_stat_${toIsoDate(new Date())}.csv`;
@@ -1431,1213 +446,15 @@ h1 {
     if (!/\d/.test(raw)) return { raw, value: null };
     return { raw, value: parseNumber(raw) };
   }
-
   function emptyMetric() { return { raw: "", value: null }; }
-
-  function buildTicks(min, max, count) {
-    if (max <= min) return [min];
-    const step = Math.max(1, roundUp((max - min) / Math.max(count - 1, 1), 20));
-    const ticks = [];
-    for (let value = min; value <= max; value += step) ticks.push(value);
-    if (ticks[ticks.length - 1] !== max) ticks.push(max);
-    return ticks;
-  }
-
-  function roundUp(value, step) { return Math.ceil(value / step) * step; }
-  function roundDown(value, step) { return Math.floor(value / step) * step; }
-
-  function indexOfHeader(headerColumns, title) {
-    const hit = headerColumns.find((cell) => normalizeText(cell.text) === title);
-    return hit ? hit.index : -1;
-  }
-
-  function normalizeText(value) { return normalizeSpace(value).toLowerCase(); }
-  function normalizeSpace(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
-
-  function trimLabel(text, maxLength) {
-    const value = normalizeSpace(text);
-    return value.length <= maxLength ? value : `${value.slice(0, maxLength - 1)}…`;
-  }
-
-  function parseNumber(value) {
-    const cleaned = String(value || "").replace(/[^\d-]/g, "");
-    return cleaned ? Number(cleaned) : 0;
-  }
-
-  function formatInt(value) { return Number(value || 0).toLocaleString("ru-RU"); }
-
-  function toIsoDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function escapeHtml(value) {
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
+  function indexOfHeader(cols, title) { const h = cols.find(c => normalizeText(c.text) === title); return h ? h.index : -1; }
+  function normalizeText(v) { return normalizeSpace(v).toLowerCase(); }
+  function normalizeSpace(v) { return String(v || "").replace(/\s+/g, " ").trim(); }
+  function trimLabel(text, max) { const v = normalizeSpace(text); return v.length <= max ? v : `${v.slice(0, max - 1)}…`; }
+  function parseNumber(v) { const c = String(v || "").replace(/[^\d-]/g, ""); return c ? Number(c) : 0; }
+  function formatInt(v) { return Number(v || 0).toLocaleString("ru-RU"); }
+  function toIsoDate(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+  function escapeHtml(v) { return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
 
   init();
-})()</textarea>
-
-<textarea id="rawStatThemeCode" style="display:none;">(function () {
-  "use strict";
-
-  if (!/\/teach\/control\/stream\/stat\/id\//.test(location.pathname)) return;
-
-  const APP_ID = "gc-stat-upgrade";
-  const ROOT_ID = `${APP_ID}-root`;
-  const STYLE_ID = `${APP_ID}-style`;
-  const INTERNAL_TABLE_ID = `${APP_ID}-internal-table`;
-  const STATE_KEY = "__gcStatUpgradeState";
-
-  try {
-    if (window[STATE_KEY] && typeof window[STATE_KEY].destroy === "function") {
-      window[STATE_KEY].destroy();
-    }
-  } catch (_) {}
-
-  const state = {
-    observer: null,
-    timer: null,
-    initializedForTable: null
-  };
-  window[STATE_KEY] = state;
-
-  function destroy() {
-    if (state.observer) {
-      state.observer.disconnect();
-      state.observer = null;
-    }
-    if (state.timer) {
-      clearInterval(state.timer);
-      state.timer = null;
-    }
-    const root = document.getElementById(ROOT_ID);
-    if (root) root.remove();
-  }
-  state.destroy = destroy;
-
-  function init() {
-    injectStyles();
-    tryRender();
-
-    state.observer = new MutationObserver(() => {
-      if (state.initializedForTable) return;
-      tryRender();
-    });
-    state.observer.observe(document.body, { childList: true, subtree: true });
-
-    let attempts = 0;
-    state.timer = setInterval(() => {
-      attempts += 1;
-      if (state.initializedForTable || attempts > 40) {
-        clearInterval(state.timer);
-        state.timer = null;
-        return;
-      }
-      tryRender();
-    }, 250);
-  }
-
-  function tryRender() {
-    const sourceTable = findStatsTable();
-    if (!sourceTable) return;
-
-    const model = buildTableModel(sourceTable);
-    if (!model.rows.length) return;
-
-    renderRoot(sourceTable, model);
-    renderChart(model);
-    bindRoot(model);
-
-    sourceTable.style.display = "none";
-    state.initializedForTable = sourceTable;
-
-    if (state.observer) {
-      state.observer.disconnect();
-      state.observer = null;
-    }
-    if (state.timer) {
-      clearInterval(state.timer);
-      state.timer = null;
-    }
-  }
-
-  function injectStyles() {
-    if (document.getElementById(STYLE_ID)) return;
-
-    const style = document.createElement("style");
-    style.id = STYLE_ID;
-    style.textContent = `
-      #${ROOT_ID}{
-        --bg:#fff;
-        --panel:#fff;
-        --ink:#11224f;
-        --muted:#5f6780;
-        --line:rgba(17,34,79,.12);
-        --blue:#2c63ff;
-        --orange:#ff6a13;
-        --green:#157f55;
-        --rose:#c44536;
-        --amber:#b86b00;
-        --shadow:0 22px 60px rgba(17,34,79,.08);
-        margin:14px 0 26px;
-        color:var(--ink);
-        font-family:"Avenir Next","Segoe UI",Arial,sans-serif;
-      }
-
-      #${ROOT_ID} *, #${ROOT_ID} *::before, #${ROOT_ID} *::after { box-sizing:border-box; }
-      #${ROOT_ID} h1,#${ROOT_ID} h2,#${ROOT_ID} h3,#${ROOT_ID} p { margin:0; }
-
-      #${ROOT_ID} .page{
-        background:#fff;
-        border-radius:24px;
-        padding:14px;
-      }
-
-      #${ROOT_ID} .panel{
-        background:var(--panel);
-        border:1px solid rgba(17,34,79,.1);
-        border-radius:20px;
-        box-shadow:var(--shadow);
-      }
-
-      #${ROOT_ID} .hero{
-        display:grid;
-        grid-template-columns:1.4fr .95fr;
-        gap:16px;
-        margin-bottom:16px;
-      }
-
-      #${ROOT_ID} .hero-main{padding:24px;}
-      #${ROOT_ID} .eyebrow{
-        display:inline-flex;
-        align-items:center;
-        gap:8px;
-        padding:6px 10px;
-        border-radius:999px;
-        background:rgba(17,34,79,.06);
-        color:var(--muted);
-        font-size:12px;
-        text-transform:uppercase;
-        letter-spacing:.04em;
-      }
-
-      #${ROOT_ID} .hero-title{
-        margin-top:14px;
-        font-size:clamp(30px,4vw,54px);
-        line-height:.95;
-        letter-spacing:-.04em;
-      }
-
-      #${ROOT_ID} .hero-copy{
-        margin-top:12px;
-        color:var(--muted);
-        font-size:16px;
-        line-height:1.5;
-        max-width:760px;
-      }
-
-      #${ROOT_ID} .hero-side{
-        padding:20px;
-        display:grid;
-        gap:14px;
-        background:linear-gradient(180deg,rgba(17,34,79,.98),rgba(25,48,105,.98));
-        color:#f8f6f2;
-      }
-
-      #${ROOT_ID} .side-title{
-        font-size:12px;
-        text-transform:uppercase;
-        letter-spacing:.1em;
-        color:rgba(255,255,255,.72);
-      }
-
-      #${ROOT_ID} .side-value{
-        font-size:clamp(38px,4vw,64px);
-        line-height:.92;
-        font-weight:700;
-        letter-spacing:-.04em;
-      }
-
-      #${ROOT_ID} .side-copy{
-        color:rgba(255,255,255,.78);
-        font-size:14px;
-        line-height:1.45;
-      }
-
-      #${ROOT_ID} .hero-grid{
-        display:grid;
-        grid-template-columns:repeat(2,minmax(0,1fr));
-        gap:10px;
-      }
-
-      #${ROOT_ID} .hero-mini{
-        padding:10px 12px;
-        border-radius:12px;
-        background:rgba(255,255,255,.08);
-        border:1px solid rgba(255,255,255,.08);
-      }
-
-      #${ROOT_ID} .hero-mini strong{
-        display:block;
-        font-size:20px;
-        letter-spacing:-.02em;
-      }
-
-      #${ROOT_ID} .hero-mini span{
-        display:block;
-        margin-top:4px;
-        font-size:12px;
-        color:rgba(255,255,255,.72);
-        line-height:1.35;
-      }
-
-      #${ROOT_ID} .hero-insights{ display:grid; gap:8px; }
-      #${ROOT_ID} .hero-insight-title{ font-size:13px; line-height:1.25; }
-
-      #${ROOT_ID} .metrics{
-        display:grid;
-        grid-template-columns:repeat(4,minmax(0,1fr));
-        gap:12px;
-        margin-bottom:16px;
-      }
-
-      #${ROOT_ID} .metric{ padding:14px 16px; }
-      #${ROOT_ID} .metric-label{ font-size:12px; color:var(--muted); margin-bottom:8px; }
-      #${ROOT_ID} .metric-value{ font-size:30px; line-height:.95; letter-spacing:-.03em; font-weight:700; }
-      #${ROOT_ID} .metric-note{ margin-top:8px; color:var(--muted); font-size:12px; line-height:1.4; }
-
-      #${ROOT_ID} .layout{
-        display:grid;
-        grid-template-columns:1fr;
-        gap:16px;
-        margin-bottom:16px;
-      }
-
-      #${ROOT_ID} .chart-card { padding:16px; }
-
-      #${ROOT_ID} .card-head{
-        display:flex;
-        justify-content:space-between;
-        align-items:flex-start;
-        gap:10px;
-        margin-bottom:10px;
-      }
-
-      #${ROOT_ID} .card-title{ font-size:24px; letter-spacing:-.03em; line-height:1; }
-      #${ROOT_ID} .card-subtitle{ margin-top:8px; color:var(--muted); font-size:13px; line-height:1.45; }
-
-      #${ROOT_ID} .legend{ display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:12px; }
-      #${ROOT_ID} .legend span{ display:inline-flex; align-items:center; gap:6px; }
-      #${ROOT_ID} .swatch{ width:10px; height:10px; border-radius:50%; display:inline-block; }
-
-      #${ROOT_ID} .chart-wrap{
-        border-radius:14px;
-        padding:10px 10px 0;
-        background:linear-gradient(180deg,rgba(17,34,79,.03),rgba(17,34,79,0));
-        border:1px solid rgba(17,34,79,.06);
-      }
-
-      #${ROOT_ID} svg{ width:100%; height:auto; display:block; }
-
-      #${ROOT_ID} .table-card{ padding:16px; }
-      #${ROOT_ID} table{ width:100%; border-collapse:collapse; }
-      #${ROOT_ID} th,#${ROOT_ID} td{
-        padding:10px;
-        text-align:left;
-        border-bottom:1px solid rgba(17,34,79,.08);
-        vertical-align:top;
-        font-size:13px;
-      }
-
-      #${ROOT_ID} th{
-        font-size:11px;
-        text-transform:uppercase;
-        letter-spacing:.05em;
-        color:var(--muted);
-      }
-
-      #${ROOT_ID} .lesson-link{ color:#185fa5; text-decoration:none; }
-      #${ROOT_ID} .lesson-link:hover{ text-decoration:underline; }
-      #${ROOT_ID} .small{ display:block; margin-top:5px; font-size:11px; color:var(--muted); line-height:1.35; }
-
-      #${ROOT_ID} .badge{
-        display:inline-flex;
-        align-items:center;
-        padding:4px 8px;
-        border-radius:999px;
-        font-size:11px;
-        font-weight:700;
-      }
-
-      #${ROOT_ID} .good{ background:rgba(21,127,85,.12); color:var(--green); }
-      #${ROOT_ID} .warn{ background:rgba(184,107,0,.12); color:var(--amber); }
-      #${ROOT_ID} .bad{ background:rgba(196,69,54,.12); color:var(--rose); }
-      #${ROOT_ID} .up{ background:rgba(44,99,255,.14); color:var(--blue); }
-      #${ROOT_ID} .muted{ color:var(--muted); }
-
-      #${ROOT_ID} .btn{
-        appearance:none;
-        border:1px solid rgba(17,34,79,.1);
-        border-radius:999px;
-        background:#fff;
-        color:var(--ink);
-        padding:8px 12px;
-        cursor:pointer;
-        font-size:12px;
-      }
-
-      @media (max-width:1120px){
-        #${ROOT_ID} .hero { grid-template-columns:1fr; }
-        #${ROOT_ID} .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
-      }
-
-      @media (max-width:720px){
-        #${ROOT_ID} .page { padding:10px; }
-        #${ROOT_ID} .hero-main,
-        #${ROOT_ID} .hero-side,
-        #${ROOT_ID} .chart-card,
-        #${ROOT_ID} .table-card,
-        #${ROOT_ID} .metric { padding:14px; }
-
-        #${ROOT_ID} .hero-grid,
-        #${ROOT_ID} .metrics { grid-template-columns:1fr; }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  function findStatsTable() {
-    const tables = Array.from(document.querySelectorAll("table"));
-
-    const native = tables.find((table) => {
-      if (table.id === INTERNAL_TABLE_ID) return false;
-      if (table.closest(`#${ROOT_ID}`)) return false;
-      return table.classList.contains("lessons-table");
-    });
-    if (native) return native;
-
-    return tables.find((table) => {
-      if (table.id === INTERNAL_TABLE_ID) return false;
-      if (table.closest(`#${ROOT_ID}`)) return false;
-
-      const headerRow = table.querySelector("thead tr");
-      if (!headerRow) return false;
-      const headers = getHeaderColumns(headerRow).map((c) => normalizeText(c.text));
-      return headers.includes("урок") && headers.includes("зашли") && headers.includes("ответили");
-    }) || null;
-  }
-
-  function getHeaderColumns(headerRow) {
-    const cols = [];
-    let colIndex = 0;
-    Array.from(headerRow.cells).forEach((cell) => {
-      const text = normalizeSpace(cell.textContent);
-      const span = Math.max(1, Number(cell.colSpan) || 1);
-      cols.push({ text, index: colIndex, span });
-      colIndex += span;
-    });
-    return cols;
-  }
-
-  function buildTableModel(table) {
-    const headerRow = table.querySelector("thead tr");
-    const headerCols = getHeaderColumns(headerRow);
-
-    const indexes = {
-      status: indexOfHeader(headerCols, "статус"),
-      entered: indexOfHeader(headerCols, "зашли"),
-      answered: indexOfHeader(headerCols, "ответили"),
-      passed: indexOfHeader(headerCols, "прошли")
-    };
-
-    const bodyRows = Array.from(table.querySelectorAll("tr")).filter((tr) => !tr.closest("thead"));
-    const rows = bodyRows.map((row) => parseRow(row, indexes)).filter(Boolean);
-
-    rows.forEach((item, i) => {
-      const prev = i > 0 ? rows[i - 1] : null;
-      item.delta = prev ? item.entered - prev.entered : null;
-      item.deltaPct = prev && prev.entered ? Math.round((item.delta / prev.entered) * 100) : null;
-      item.answerRate = item.answered !== null && item.entered ? Math.round((item.answered / item.entered) * 100) : null;
-      item.passedRate = item.passed !== null && item.entered ? Math.round((item.passed / item.entered) * 100) : null;
-      item.answerGap = item.answered !== null ? item.entered - item.answered : null;
-      item.passedGap = item.passed !== null ? item.entered - item.passed : null;
-    });
-
-    const first = rows[0] || null;
-    const last = rows.length ? rows[rows.length - 1] : null;
-
-    const answerRows = rows.filter((r) => r.answerRate !== null);
-    const totalAnswerRate = answerRows.length
-      ? Math.round(answerRows.reduce((acc, r) => acc + r.answerRate, 0) / answerRows.length)
-      : null;
-
-    const largestDrop = rows.reduce((acc, item, i) => {
-      if (i === 0 || item.delta === null || item.delta >= acc.value) return acc;
-      return {
-        value: item.delta,
-        index: i,
-        fromTitle: rows[i - 1].title,
-        title: item.title
-      };
-    }, { value: 0, index: 0, fromTitle: "", title: "" });
-
-    const completionRate = first && last && first.entered
-      ? Math.round((last.entered / first.entered) * 100)
-      : 0;
-
-    const startAnswerRate = first && first.answerRate !== null ? first.answerRate : null;
-    const finalAnswerRate = last && last.answerRate !== null ? last.answerRate : null;
-
-    const averageLessonShare = first && first.entered
-      ? Math.round((rows.reduce((sum, r) => sum + r.entered, 0) / rows.length / first.entered) * 100)
-      : 0;
-
-    return {
-      rows,
-      first,
-      last,
-      completionRate,
-      totalAnswerRate,
-      startAnswerRate,
-      finalAnswerRate,
-      averageLessonShare,
-      largestDrop
-    };
-  }
-
-  function parseRow(row, indexes) {
-    const cells = row.cells;
-    if (!cells || !cells.length || indexes.entered < 0 || !cells[indexes.entered]) return null;
-
-    const lessonCell =
-      row.querySelector("td.main-info") ||
-      Array.from(cells).find((c) => c.querySelector("a")) ||
-      cells[0];
-
-    const lessonLink = lessonCell ? lessonCell.querySelector("a") : null;
-    const title = normalizeSpace(lessonLink ? lessonLink.textContent : lessonCell ? lessonCell.textContent : "");
-    if (!title) return null;
-
-    const href = lessonLink ? lessonLink.href : "";
-    const status = indexes.status >= 0 && cells[indexes.status] ? normalizeSpace(cells[indexes.status].textContent) : "";
-    const enteredMetric = readMetricCell(cells[indexes.entered]);
-    const answeredMetric = indexes.answered >= 0 && cells[indexes.answered] ? readMetricCell(cells[indexes.answered]) : emptyMetric();
-    const passedMetric = indexes.passed >= 0 && cells[indexes.passed] ? readMetricCell(cells[indexes.passed]) : emptyMetric();
-
-    if (enteredMetric.value === null) return null;
-
-    return {
-      title,
-      href,
-      status,
-      entered: enteredMetric.value,
-      answered: answeredMetric.value,
-      answeredRaw: answeredMetric.raw,
-      passed: passedMetric.value,
-      passedRaw: passedMetric.raw,
-      delta: null,
-      deltaPct: null,
-      answerRate: null,
-      passedRate: null,
-      answerGap: null,
-      passedGap: null
-    };
-  }
-
-  function buildTopInsights(model) {
-    const items = [];
-
-    if (model.largestDrop.value < 0) {
-      items.push({
-        title: "Провал в связке уроков",
-        text: `Максимальная просадка ${formatInt(Math.abs(model.largestDrop.value))} чел. между «${trimLabel(model.largestDrop.fromTitle, 36)}» и «${trimLabel(model.largestDrop.title, 36)}».`
-      });
-    }
-
-    const lowAnswer = model.rows
-      .filter((r) => r.answerRate !== null && r.answerRate < 70)
-      .sort((a, b) => a.answerRate - b.answerRate)
-      .slice(0, 2);
-
-    if (lowAnswer.length) {
-      items.push({
-        title: "Низкая вовлеченность в задания",
-        text: lowAnswer.map((r) => `«${trimLabel(r.title, 32)}» (${r.answerRate}%)`).join(", ")
-      });
-    }
-
-    return items;
-  }
-
-  function renderRoot(sourceTable, model) {
-    let root = document.getElementById(ROOT_ID);
-    const parent = sourceTable.parentNode;
-    if (!parent) return;
-
-    if (!root) {
-      root = document.createElement("section");
-      root.id = ROOT_ID;
-      const next = sourceTable.nextSibling;
-      if (next) parent.insertBefore(root, next);
-      else parent.appendChild(root);
-    } else if (root.parentNode !== parent) {
-      const next = sourceTable.nextSibling;
-      if (next) parent.insertBefore(root, next);
-      else parent.appendChild(root);
-    }
-
-    root.dataset.bound = "0";
-    root._model = model;
-
-    const metricItems = buildMetricItems(model);
-
-    root.innerHTML = `
-      <div class="page">
-        <section class="metrics">
-          ${metricItems.map(renderMetricCard).join("")}
-        </section>
-
-        <section class="layout">
-          <article class="panel chart-card">
-            <div class="card-head">
-              <div>
-                <h2 class="card-title">Воронка уроков</h2>
-                <p class="card-subtitle">Подсветка отмечает переходы с наибольшей просадкой.</p>
-              </div>
-              <div>
-                <button type="button" class="btn" data-role="csv">Экспорт CSV</button>
-              </div>
-            </div>
-            <div class="legend">
-              <span><i class="swatch" style="background:var(--blue)"></i>Зашли</span>
-              ${model.rows.some((r) => r.answered !== null) ? '<span><i class="swatch" style="background:var(--orange)"></i>Ответили</span>' : ""}
-            </div>
-            <div class="chart-wrap">
-              <svg id="${APP_ID}-chart" viewBox="0 0 980 430" aria-label="Воронка уроков"></svg>
-            </div>
-          </article>
-        </section>
-
-        <section class="panel table-card">
-          <table id="${INTERNAL_TABLE_ID}">
-            <thead>
-              <tr>
-                <th>Урок</th>
-                <th>Зашли</th>
-                <th>Ответили</th>
-                <th>Не ответили</th>
-                <th>Конверсия ответа</th>
-                <th>Динамика</th>
-                <th>Сигнал</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${model.rows.map((row, i) => renderLessonRow(row, i)).join("")}
-            </tbody>
-          </table>
-        </section>
-      </div>
-    `;
-  }
-
-  function buildMetricItems(model) {
-    const first = model.first ? model.first.entered : 0;
-    const last = model.last ? model.last.entered : 0;
-    const lost = Math.max(0, first - last);
-    const largestDropText = model.largestDrop.value
-      ? `${formatInt(Math.abs(model.largestDrop.value))} чел.`
-      : "0 чел.";
-
-    return [
-      { label: "Стартовали", value: formatInt(first), note: "Базовая аудитория, от которой считаем реальную воронку." },
-      { label: "Дошли до финала", value: formatInt(last), note: `${model.completionRate}% от первого урока.` },
-      { label: "Потеря по пути", value: formatInt(lost), note: "Разница между стартом и финалом." },
-      { label: "Самая слабая связка", value: largestDropText, note: model.largestDrop.value ? "Переход с максимальной просадкой внимания." : "Резкой просадки не обнаружено." }
-    ];
-  }
-
-  function renderMetricCard(item) {
-    return `<article class="panel metric"><p class="metric-label">${item.label}</p><h3 class="metric-value">${item.value}</h3><p class="metric-note">${item.note}</p></article>`;
-  }
-
-  function renderLessonRow(row, index) {
-    const signal = getSignal(row);
-    const lessonLabel = row.href ? `<a class="lesson-link" href="${escapeHtml(row.href)}">${escapeHtml(row.title)}</a>` : escapeHtml(row.title);
-    const answeredDisplay = row.answered !== null ? formatInt(row.answered) : escapeHtml(row.answeredRaw || "—");
-    const notAnsweredDisplay = row.answerGap !== null ? formatInt(row.answerGap) : "—";
-    const conversionDisplay = row.answerRate === null ? "—" : `${row.answerRate}%`;
-    const diffDisplay = index === 0 || row.delta === null ? "—" : `${row.delta} чел. (${row.deltaPct > 0 ? "+" : ""}${row.deltaPct}%)`;
-    const detail = `Статус: ${escapeHtml(row.status || "—")} · Прошли: ${row.passed !== null ? formatInt(row.passed) : escapeHtml(row.passedRaw || "—")}`;
-
-    return `
-      <tr>
-        <td>${lessonLabel}<span class="small">${detail}</span></td>
-        <td>${formatInt(row.entered)}</td>
-        <td>${answeredDisplay}</td>
-        <td>${notAnsweredDisplay}</td>
-        <td>${conversionDisplay}</td>
-        <td class="${index === 0 || row.delta === null || row.delta >= 0 ? "muted" : ""}">${diffDisplay}</td>
-        <td><span class="badge ${signal.className}">${signal.label}</span></td>
-      </tr>
-    `;
-  }
-
-  function getSignal(row) {
-    if (row.answered === null) return { className: "warn", label: "Нет задания" };
-    if (row.delta !== null && row.delta > 0) return { className: "up", label: "Прирост" };
-    if (row.delta !== null && row.delta <= -30) return { className: "bad", label: "Проверить переход" };
-    if (row.delta !== null && row.delta <= -15) return { className: "warn", label: "Наблюдать" };
-
-    if (row.answerRate !== null && row.answerRate < 70) {
-      if (row.delta === null || row.delta < 0) {
-        return { className: "warn", label: "Падает вовлечение" };
-      }
-      return { className: "good", label: "Стабильно" };
-    }
-
-    return { className: "good", label: "Стабильно" };
-  }
-
-  function renderChart(model) {
-    const svg = document.getElementById(`${APP_ID}-chart`);
-    if (!svg) return;
-
-    const width = 980;
-    const height = 430;
-    const margin = { top: 18, right: 20, bottom: 90, left: 58 };
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
-
-    const numericValues = model.rows.flatMap((item) => [item.entered, item.answered].filter((v) => v !== null));
-    const yMax = roundUp(Math.max.apply(null, numericValues.concat([100])), 20);
-    const yMin = Math.max(0, roundDown(Math.min.apply(null, numericValues.concat([0])) - 40, 20));
-    const stepX = model.rows.length > 1 ? innerWidth / (model.rows.length - 1) : innerWidth;
-    const ticks = buildTicks(yMin, yMax, 6);
-
-    const x = (index) => margin.left + index * stepX;
-    const y = (value) => {
-      if (value === null) return null;
-      const ratio = (value - yMin) / Math.max(yMax - yMin, 1);
-      return margin.top + innerHeight - ratio * innerHeight;
-    };
-
-    const pathFor = (key) => {
-      let started = false;
-      return model.rows.map((item, idx) => {
-        const v = item[key];
-        if (v === null) {
-          started = false;
-          return "";
-        }
-        const cmd = started ? "L" : "M";
-        started = true;
-        return `${cmd}${x(idx).toFixed(2)},${y(v).toFixed(2)}`;
-      }).join(" ");
-    };
-
-    const gridLines = ticks.map((value) => `
-      <g>
-        <line x1="${margin.left}" x2="${width - margin.right}" y1="${y(value)}" y2="${y(value)}" stroke="rgba(17,34,79,.12)" stroke-width="1"/>
-        <text x="${margin.left - 14}" y="${y(value) + 5}" text-anchor="end" font-size="12" fill="#5f6780">${formatInt(value)}</text>
-      </g>
-    `).join("");
-
-    const areas = model.rows.slice(1).map((lesson, i) => {
-      const diff = lesson.delta;
-      if (diff === null || diff > -15) return "";
-      const startX = x(i);
-      const endX = x(i + 1);
-      const fill = diff <= -30 ? "rgba(196,69,54,.08)" : "rgba(255,106,19,.08)";
-      return `<rect x="${startX}" y="${margin.top}" width="${endX - startX}" height="${innerHeight}" fill="${fill}"></rect>`;
-    }).join("");
-
-    const labels = model.rows.map((lesson, idx) => `
-      <text x="${x(idx)}" y="${height - 28}" transform="rotate(-28 ${x(idx)} ${height - 28})" font-size="12" fill="#5f6780">${escapeHtml(trimLabel(lesson.title, 28))}</text>
-    `).join("");
-
-    const enteredMarkers = model.rows.map((lesson, idx) => `<circle cx="${x(idx)}" cy="${y(lesson.entered)}" r="4.5" fill="#2c63ff"></circle>`).join("");
-    const answeredMarkers = model.rows.map((lesson, idx) => lesson.answered === null ? "" : `<circle cx="${x(idx)}" cy="${y(lesson.answered)}" r="4.5" fill="#ff6a13"></circle>`).join("");
-
-    svg.innerHTML = `
-      ${gridLines}
-      ${areas}
-      <path d="${pathFor("entered")}" fill="none" stroke="#2c63ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
-      ${model.rows.some((item) => item.answered !== null) ? `<path d="${pathFor("answered")}" fill="none" stroke="#ff6a13" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>` : ""}
-      ${enteredMarkers}
-      ${answeredMarkers}
-      ${labels}
-    `;
-  }
-
-  function bindRoot(model) {
-    const root = document.getElementById(ROOT_ID);
-    if (!root || root.dataset.bound === "1") return;
-
-    root.addEventListener("click", (event) => {
-      const btn = event.target.closest('button[data-role="csv"]');
-      if (!btn) return;
-      downloadCsv(root._model || model);
-    });
-
-    root.dataset.bound = "1";
-  }
-
-  function downloadCsv(model) {
-    const rows = [[
-      "Урок", "Статус", "Зашли", "Ответили", "Не ответили", "Прошли",
-      "Конверсия ответа", "Конверсия прохождения", "Динамика", "Сигнал"
-    ]];
-
-    model.rows.forEach((item, i) => {
-      const signal = getSignal(item);
-      rows.push([
-        item.title,
-        item.status || "",
-        item.entered,
-        item.answered !== null ? item.answered : item.answeredRaw || "",
-        item.answerGap !== null ? item.answerGap : "—",
-        item.passed !== null ? item.passed : item.passedRaw || "",
-        item.answerRate === null ? "—" : `${item.answerRate}%`,
-        item.passedRate === null ? "—" : `${item.passedRate}%`,
-        i === 0 || item.delta === null ? "—" : `${item.delta} (${item.deltaPct > 0 ? "+" : ""}${item.deltaPct}%)`,
-        signal.label
-      ]);
-    });
-
-    const csv = rows.map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\n");
-    const link = document.createElement("a");
-    link.href = `data:text/csv;charset=utf-8,\uFEFF${encodeURIComponent(csv)}`;
-    link.download = `lesson_stat_${toIsoDate(new Date())}.csv`;
-    link.click();
-  }
-
-  function readMetricCell(cell) {
-    const raw = normalizeSpace(cell ? cell.textContent : "");
-    if (!raw) return emptyMetric();
-    if (!/\d/.test(raw)) return { raw, value: null };
-    return { raw, value: parseNumber(raw) };
-  }
-
-  function emptyMetric() { return { raw: "", value: null }; }
-
-  function buildTicks(min, max, count) {
-    if (max <= min) return [min];
-    const step = Math.max(1, roundUp((max - min) / Math.max(count - 1, 1), 20));
-    const ticks = [];
-    for (let value = min; value <= max; value += step) ticks.push(value);
-    if (ticks[ticks.length - 1] !== max) ticks.push(max);
-    return ticks;
-  }
-
-  function roundUp(value, step) { return Math.ceil(value / step) * step; }
-  function roundDown(value, step) { return Math.floor(value / step) * step; }
-
-  function indexOfHeader(headerColumns, title) {
-    const hit = headerColumns.find((cell) => normalizeText(cell.text) === title);
-    return hit ? hit.index : -1;
-  }
-
-  function normalizeText(value) { return normalizeSpace(value).toLowerCase(); }
-  function normalizeSpace(value) { return String(value || "").replace(/\s+/g, " ").trim(); }
-
-  function trimLabel(text, maxLength) {
-    const value = normalizeSpace(text);
-    return value.length <= maxLength ? value : `${value.slice(0, maxLength - 1)}…`;
-  }
-
-  function parseNumber(value) {
-    const cleaned = String(value || "").replace(/[^\d-]/g, "");
-    return cleaned ? Number(cleaned) : 0;
-  }
-
-  function formatInt(value) { return Number(value || 0).toLocaleString("ru-RU"); }
-
-  function toIsoDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function escapeHtml(value) {
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
-
-  init();
-})();</textarea>
-
-<div class="page">
-
-  <div class="header">
-    <div class="logo">ModuleStat <span>/ для GetCourse</span></div>
-    <h1>Статистика модуля<br>в один клик</h1>
-    <p class="subtitle">Добавляет умные колонки прямо в таблицу учеников GetCourse — без сторонних интеграций, без программистов.</p>
-  </div>
-
-  <div class="features">
-    <div class="feature">
-      <div class="feature-icon">📊</div>
-      <div class="feature-title">% просмотров</div>
-      <div class="feature-desc">Сколько уроков модуля ученик реально посмотрел</div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">✅</div>
-      <div class="feature-title">% сданных ДЗ</div>
-      <div class="feature-desc">Считается только от уроков с ДЗ — точно и честно</div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">⚡</div>
-      <div class="feature-title">Отставание по ДЗ</div>
-      <div class="feature-desc">Сколько ДЗ ещё не сдано. Цветовая индикация по критичности</div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">⬇</div>
-      <div class="feature-title">Выгрузка в CSV</div>
-      <div class="feature-desc">Все данные одной кнопкой в Excel или Google Sheets</div>
-    </div>
-  </div>
-
-  <div class="statuses">
-    <div class="statuses-title">Статусы учеников</div>
-    <div class="status-row"><span class="badge badge-green">✓ завершён</span><span class="status-desc">Все ДЗ сданы</span></div>
-    <div class="status-row"><span class="badge badge-purple">Уроки пройдены, ДЗ не закрыто</span><span class="status-desc">Посмотрел всё, но есть хвост по ДЗ</span></div>
-    <div class="status-row"><span class="badge badge-amber">ДЗ отстаёт от просмотров</span><span class="status-desc">Смотрит уроки, ДЗ не успевает</span></div>
-    <div class="status-row"><span class="badge badge-blue">в процессе</span><span class="status-desc">Идёт в ногу — смотрит и сдаёт</span></div>
-    <div class="status-row"><span class="badge badge-red">не начал</span><span class="status-desc">Ни одного урока не открыл</span></div>
-  </div>
-
-  <div class="install-title">Установка</div>
-  <p class="install-subtitle">Два способа на выбор — оба работают одинаково хорошо.</p>
-
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('theme', this)">⚙️ Через тему аккаунта</button>
-    <button class="tab-btn" onclick="switchTab('bookmark', this)">🔖 Закладка в браузере</button>
-  </div>
-
-  <!-- TAB: THEME -->
-  <div class="tab-panel active" id="tab-theme">
-
-    <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Скрипт устанавливается один раз в настройки аккаунта GetCourse и затем <b style="color:var(--ink)">автоматически</b> запускается при каждом открытии страницы учеников любого модуля — для всех администраторов школы.</p>
-
-    <div class="steps-label">Пошаговая инструкция</div>
-
-    <div class="step">
-      <div class="step-num blue">1</div>
-      <div class="step-body">
-        <div class="step-title">Создай новую тему</div>
-        <div class="step-desc">Перейди по адресу <code>/pl/cms/layout/index</code> и нажми <b>«Создать тему»</b>. Дай ей любое название, например «Скрипт статистики».</div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num blue">2</div>
-      <div class="step-body">
-        <div class="step-title">Вставь код в вкладку JS</div>
-        <div class="step-desc">В настройках темы перейди на вкладку <b>JS</b>, вставь код ниже и нажми <b>«Сохранить»</b>.</div>
-        <div class="theme-code-wrap" style="margin-top:10px;">
-          <div class="theme-code-label">Код для вставки в JS темы</div>
-          <div class="theme-code-area" id="themeCodeArea">загрузка...</div>
-          <button class="copy-btn" onclick="copyThemeCode()">Скопировать код <span class="copied-msg" id="themecopiedMsg">✓ скопировано</span></button>
-        </div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num blue">3</div>
-      <div class="step-body">
-        <div class="step-title">Получи ссылку на JS файл темы</div>
-        <div class="step-desc">На странице настроек темы внизу найди строку <b>«Bundle файлы: CSS [validate] / JS»</b>. Нажми на <b>JS</b> — откроется файл. Скопируй из адресной строки относительную ссылку вида:<br><code>/pl/cms/layout/js?id=XXXXXXXX&hash=...</code></div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num blue">4</div>
-      <div class="step-body">
-        <div class="step-title">Подключи скрипт в настройках аккаунта</div>
-        <div class="step-desc">Перейди в <b>Настройки аккаунта</b> → раздел <b>«Счётчики и прочие скрипты»</b> → блок <b>«для BODY»</b>. Вставь код ниже, заменив ссылку на свою:</div>
-        <div class="theme-code-wrap" style="margin-top:10px;">
-          <div class="theme-code-label">Вставить в «Счётчики для BODY»</div>
-          <div class="theme-code-area">&lt;!-- СКРИПТ ДЛЯ АНАЛИТИКИ ПРОХОЖДЕНИЯ ТРЕНИНГА --&gt;
-&lt;script src="ВАША_ССЫЛКА_ИЗ_ШАГА_3"&gt;&lt;/script&gt;</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num blue">5</div>
-      <div class="step-body">
-        <div class="step-title">Подожди и проверь</div>
-        <div class="step-desc">Нажми <b>«Сохранить»</b>. Настройки применяются в течение <b>10 минут</b>. После этого открой любой модуль → вкладка «Ученики» — статистика появится автоматически.</div>
-      </div>
-    </div>
-
-    <div class="note">
-      <b>Важно:</b> скрипт запускается только на странице учеников модуля (<code>/teach/control/stat/stream/id/...</code>) и не влияет на другие страницы аккаунта.
-    </div>
-
-  </div>
-
-  <!-- TAB: BOOKMARK -->
-  <div class="tab-panel" id="tab-bookmark">
-
-    <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Букмарклет сохраняется в панели закладок браузера. Открываешь страницу учеников любого модуля и нажимаешь закладку — статистика появляется мгновенно. Работает в любой школе без изменения настроек аккаунта.</p>
-
-    <div class="bookmark-wrap">
-      <div class="bookmark-label">Перетащи кнопку в панель закладок браузера</div>
-      <a id="bmBtn" class="bookmark-btn" href="#">📊 ModuleStat</a>
-      <div class="bookmark-arrow">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-        Перетащи сюда, в панель закладок
-      </div>
-    </div>
-
-    <div class="steps-label">Пошаговая инструкция</div>
-
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <div class="step-title">Включи панель закладок</div>
-        <div class="step-desc">Windows / Linux: <b>Ctrl + Shift + B</b><br>Mac: <b>Cmd + Shift + B</b></div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <div class="step-title">Перетащи кнопку в панель</div>
-        <div class="step-desc">Зажми синюю кнопку <b>«📊 ModuleStat»</b> выше и перетащи её в панель закладок в верхней части браузера.</div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-body">
-        <div class="step-title">Открой страницу учеников модуля</div>
-        <div class="step-desc">В GetCourse зайди в нужный модуль (подтренинг) → вкладка <b>«Ученики»</b>. Адрес будет вида <code>/teach/control/stat/stream/id/...</code></div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-body">
-        <div class="step-title">Нажми закладку</div>
-        <div class="step-desc">Кликни <b>«📊 ModuleStat»</b> в панели закладок — скрипт автоматически определит количество уроков и ДЗ, и добавит новые колонки в таблицу.</div>
-      </div>
-    </div>
-
-    <div class="manual">
-      <div class="manual-header" onclick="toggleManual(this)">
-        Не получается перетащить? Установи вручную
-        <svg class="manual-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-      </div>
-      <div class="manual-body" id="manualBody">
-        <p>Правая кнопка на панели закладок → <b>«Добавить страницу»</b> (или «Добавить закладку») → в поле <b>URL</b> вставь код ниже → сохрани.</p>
-        <div class="code-area" id="codeArea">загрузка...</div>
-        <button class="copy-btn" onclick="copyCode()">Скопировать код <span class="copied-msg" id="copiedMsg">✓ скопировано</span></button>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="usage">
-    <div class="usage-title">Как пользоваться каждый раз</div>
-    <div class="usage-step"><span>→</span><span>Открой любой модуль в GetCourse → вкладка «Ученики»</span></div>
-    <div class="usage-step"><span>→</span><span>При установке через тему — статистика появляется автоматически. При закладке — нажми «📊 ModuleStat»</span></div>
-    <div class="usage-step"><span>→</span><span>Через секунду таблица обновится: проценты, статусы, отставание по ДЗ + кнопка «Скачать CSV»</span></div>
-    <div class="usage-step"><span>→</span><span>Количество уроков и ДЗ-уроков определяется автоматически для каждого модуля</span></div>
-  </div>
-
-  <div style="border-top:2px solid #e8edf3;margin:40px 0 32px;"></div>
-
-  <div class="header" style="margin-top:0;">
-    <div class="logo">LessonStat <span>/ для GetCourse</span></div>
-    <h1>Аналитика уроков<br>на странице Статистика</h1>
-    <p class="subtitle">Добавляет % охвата, динамику отвала, тепловую карту и фильтр по дате прямо на страницу «Статистика» потока.</p>
-  </div>
-
-  <div class="features">
-    <div class="feature">
-      <div class="feature-icon">📈</div>
-      <div class="feature-title">% Зашли / ДЗ / Прошли</div>
-      <div class="feature-desc">Показывает долю охвата от самого популярного урока — понятный контекст вместо голых чисел</div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">📉</div>
-      <div class="feature-title">Δ отвал</div>
-      <div class="feature-desc">Сколько учеников потеряно между соседними уроками. Сразу видно узкое место</div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">🌡</div>
-      <div class="feature-title">Тепловая карта</div>
-      <div class="feature-desc">Красный — слабо, жёлтый — средне, зелёный — хорошо. Без таблиц и расчётов</div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">📅</div>
-      <div class="feature-title">Фильтр по дате</div>
-      <div class="feature-desc">Поля «с / по» добавляются прямо на страницу и передают дату в GetCourse</div>
-    </div>
-  </div>
-
-  <div class="install-title">Установка</div>
-  <p class="install-subtitle">Те же два способа — через тему аккаунта или закладку в браузере.</p>
-
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchStatTab('stat-theme', this)">⚙️ Через тему аккаунта</button>
-    <button class="tab-btn" onclick="switchStatTab('stat-bookmark', this)">🔖 Закладка в браузере</button>
-  </div>
-
-  <div class="tab-panel active" id="tab-stat-theme">
-    <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Если скрипт Учеников уже установлен через тему — <b style="color:var(--ink)">дополни тот же JS файл</b> этим кодом снизу. Он работает на другом URL и не будет конфликтовать.</p>
-    <div class="theme-code-wrap">
-      <div class="theme-code-label">Код для вставки в JS темы (добавить после существующего кода)</div>
-      <div class="theme-code-area" id="statThemeCodeArea">загрузка...</div>
-      <button class="copy-btn" onclick="copyStatThemeCode()">Скопировать код <span class="copied-msg" id="statThemeCopiedMsg">✓ скопировано</span></button>
-    </div>
-    <div class="note" style="margin-top:16px;">
-      <b>Страница:</b> работает только на <code>/teach/control/stream/stat/id/...</code> (вкладка «Статистика» потока) и не затрагивает другие страницы.
-    </div>
-  </div>
-
-  <div class="tab-panel" id="tab-stat-bookmark">
-    <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Отдельная закладка для страницы Статистики. Открой вкладку «Статистика» любого потока и кликни закладку.</p>
-    <div class="bookmark-wrap">
-      <div class="bookmark-label">Перетащи кнопку в панель закладок браузера</div>
-      <a id="statBmBtn" class="bookmark-btn" href="#" style="background:linear-gradient(135deg,#6D28D9,#4C1D95);">📈 LessonStat</a>
-      <div class="bookmark-arrow">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-        Перетащи сюда, в панель закладок
-      </div>
-    </div>
-    <div class="manual" style="margin-top:16px;">
-      <div class="manual-header" onclick="toggleStatManual(this)">
-        Не получается перетащить? Установи вручную
-        <svg class="manual-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b6b6b" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-      </div>
-      <div class="manual-body" id="statManualBody">
-        <p>Правая кнопка на панели закладок → <b>«Добавить страницу»</b> → в поле <b>URL</b> вставь код ниже → сохрани.</p>
-        <div class="code-area" id="statCodeArea">загрузка...</div>
-        <button class="copy-btn" onclick="copyStatCode()">Скопировать код <span class="copied-msg" id="statCopiedMsg">✓ скопировано</span></button>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-function setupInstructions() {
-  var rawCode = document.getElementById('rawBookmarklet').value.trim();
-  var THEME_CODE = document.getElementById('rawThemeCode').value.trim();
-
-  // Формируем корректный javascript: URL через encodeURIComponent
-  // Это гарантирует правильную передачу одинарных кавычек и всех спецсимволов
-  var bookmarkletHref = 'javascript:' + encodeURIComponent(rawCode);
-
-  var bmBtn = document.getElementById('bmBtn');
-  var codeArea = document.getElementById('codeArea');
-  if (bmBtn) bmBtn.href = bookmarkletHref;
-  if (codeArea) codeArea.textContent = bookmarkletHref;
-
-  var themeCodeArea = document.getElementById('themeCodeArea');
-  if (themeCodeArea) themeCodeArea.textContent = THEME_CODE;
-}
-
-function copyCode() {
-  var rawCode = document.getElementById('rawBookmarklet').value.trim();
-  var bookmarkletHref = 'javascript:' + encodeURIComponent(rawCode);
-  navigator.clipboard.writeText(bookmarkletHref).then(function() {
-    var msg = document.getElementById('copiedMsg');
-    msg.style.opacity = '1';
-    setTimeout(function() { msg.style.opacity = '0'; }, 2000);
-  });
-}
-
-function copyThemeCode() {
-  var code = document.getElementById('rawThemeCode').value.trim();
-  navigator.clipboard.writeText(code).then(function() {
-    var msg = document.getElementById('themecopiedMsg');
-    msg.style.opacity = '1';
-    setTimeout(function() { msg.style.opacity = '0'; }, 2000);
-  });
-}
-
-function switchTab(name, btn) {
-  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
-  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-  document.getElementById('tab-' + name).classList.add('active');
-  btn.classList.add('active');
-}
-
-function toggleManual(header) {
-  var body = document.getElementById('manualBody');
-  var chevron = header.querySelector('.manual-chevron');
-  body.classList.toggle('open');
-  if (chevron) chevron.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
-}
-
-function setupStatInstructions() {
-  var rawCode = document.getElementById('rawStatBookmarklet').value.trim();
-  var themeCode = document.getElementById('rawStatThemeCode').value.trim();
-  var bookmarkletHref = 'javascript:' + encodeURIComponent(rawCode);
-
-  var statBmBtn = document.getElementById('statBmBtn');
-  var statCodeArea = document.getElementById('statCodeArea');
-  if (statBmBtn) statBmBtn.href = bookmarkletHref;
-  if (statCodeArea) statCodeArea.textContent = bookmarkletHref;
-
-  var statThemeCodeArea = document.getElementById('statThemeCodeArea');
-  if (statThemeCodeArea) statThemeCodeArea.textContent = themeCode;
-}
-
-function copyStatCode() {
-  var rawCode = document.getElementById('rawStatBookmarklet').value.trim();
-  var bookmarkletHref = 'javascript:' + encodeURIComponent(rawCode);
-  navigator.clipboard.writeText(bookmarkletHref).then(function() {
-    var msg = document.getElementById('statCopiedMsg');
-    msg.style.opacity = '1';
-    setTimeout(function() { msg.style.opacity = '0'; }, 2000);
-  });
-}
-
-function copyStatThemeCode() {
-  var code = document.getElementById('rawStatThemeCode').value.trim();
-  navigator.clipboard.writeText(code).then(function() {
-    var msg = document.getElementById('statThemeCopiedMsg');
-    msg.style.opacity = '1';
-    setTimeout(function() { msg.style.opacity = '0'; }, 2000);
-  });
-}
-
-function switchStatTab(name, btn) {
-  document.querySelectorAll('#tab-stat-theme, #tab-stat-bookmark').forEach(function(p) { p.classList.remove('active'); });
-  btn.parentElement.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-  document.getElementById('tab-' + name).classList.add('active');
-  btn.classList.add('active');
-}
-
-function toggleStatManual(header) {
-  var body = document.getElementById('statManualBody');
-  var chevron = header.querySelector('.manual-chevron');
-  body.classList.toggle('open');
-  if (chevron) chevron.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  setupInstructions();
-  setupStatInstructions();
-});
-</script>
-</body>
-</html>
+})();
