@@ -105,7 +105,8 @@
       #${ROOT_ID} .legend{ display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:12px; margin-bottom:12px; }
       #${ROOT_ID} .legend span{ display:inline-flex; align-items:center; gap:6px; }
       #${ROOT_ID} .swatch{ width:12px; height:12px; border-radius:3px; display:inline-block; flex-shrink:0; }
-      #${ROOT_ID} .chart-wrap{ border-radius:14px; padding:16px 16px 0; background:linear-gradient(180deg,rgba(17,34,79,.03),rgba(17,34,79,0)); border:1px solid rgba(17,34,79,.06); overflow-x:auto; }
+      #${ROOT_ID} .chart-outer{ max-width:100%; overflow:hidden; border-radius:14px; border:1px solid rgba(17,34,79,.06); background:linear-gradient(180deg,rgba(17,34,79,.03),rgba(17,34,79,0)); }
+      #${ROOT_ID} .chart-wrap{ overflow-x:auto; overflow-y:visible; padding:16px 16px 0; width:100%; display:block; }
       #${ROOT_ID} svg{ display:block; }
       #${ROOT_ID} .table-card{ padding:16px; }
       #${ROOT_ID} table{ width:100%; border-collapse:collapse; }
@@ -280,9 +281,9 @@
               <span><i class="swatch" style="background:#c44536"></i>Провал заходов</span>
               ${hasAnswered ? '<span><i class="swatch" style="background:rgba(196,69,54,.38);border:1.5px solid #c44536"></i>Провал ДЗ</span>' : ""}
             </div>
-            <div class="chart-wrap">
+            <div class="chart-outer"><div class="chart-wrap">
               <svg id="${APP_ID}-chart" aria-label="Воронка уроков"></svg>
-            </div>
+            </div></div>
           </article>
         </section>
 
