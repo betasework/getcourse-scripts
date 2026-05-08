@@ -754,7 +754,7 @@
 
     const lessonWidth = 86;
     const maxLabelLength = model.rows.reduce((acc, item) => Math.max(acc, String(item.title || "").length), 0);
-    const bottomMargin = clamp(120 + maxLabelLength * 3, 140, 280);
+    const bottomMargin = clamp(110 + maxLabelLength * 2.6, 150, 320);
     const margin = { top: 18, right: 64, bottom: bottomMargin, left: 64 };
     const innerHeightTarget = 300;
     const height = margin.top + innerHeightTarget + margin.bottom;
@@ -806,9 +806,25 @@
       : "";
 
     const labelBaseY = margin.top + innerHeight + 10;
-    const labels = model.rows.map((lesson, idx) => `
-      <text x="${x(idx)}" y="${labelBaseY}" transform="rotate(90 ${x(idx)} ${labelBaseY})" text-anchor="start" font-size="10" fill="#5f6780">${escapeHtml(lesson.title)}</text>
-    `).join("");
+    const labels = model.rows.map((lesson, idx) => {
+      const lines = splitLabelLines(lesson.title, 20, 3);
+      const textX = x(idx);
+      const textY = labelBaseY;
+      const lineSpans = lines.map((line, lineIdx) => {
+        const dy = lineIdx === 0 ? "0" : "1.05em";
+        return `<tspan x="${textX}" dy="${dy}">${escapeHtml(line)}</tspan>`;
+      }).join("");
+      return `
+        <text
+          x="${textX}"
+          y="${textY}"
+          transform="rotate(-90 ${textX} ${textY})"
+          text-anchor="start"
+          font-size="11"
+          fill="#5f6780"
+        >${lineSpans}</text>
+      `;
+    }).join("");
 
     const enteredMarkers = model.rows.map((lesson, idx) => `<circle cx="${x(idx)}" cy="${y(lesson.entered)}" r="4.5" fill="#2c63ff"></circle>`).join("");
     const answeredMarkers = model.rows.map((lesson, idx) => lesson.answered === null ? "" : `<circle cx="${x(idx)}" cy="${y(lesson.answered)}" r="4.5" fill="#ff6a13"></circle>`).join("");
@@ -955,6 +971,35 @@
   function trimLabel(text, maxLength) {
     const value = normalizeSpace(text);
     return value.length <= maxLength ? value : `${value.slice(0, maxLength - 1)}…`;
+  }
+
+  function splitLabelLines(text, maxCharsPerLine, maxLines) {
+    const cleaned = normalizeSpace(text);
+    if (!cleaned) return [""];
+
+    const words = cleaned.split(" ");
+    const lines = [];
+    let current = "";
+
+    for (let i = 0; i < words.length; i += 1) {
+      const word = words[i];
+      const next = current ? `${current} ${word}` : word;
+      if (next.length <= maxCharsPerLine || !current) {
+        current = next;
+      } else {
+        lines.push(current);
+        current = word;
+      }
+
+      if (lines.length === maxLines - 1 && i < words.length - 1) {
+        const tail = [current].concat(words.slice(i + 1)).join(" ");
+        lines.push(trimLabel(tail, maxCharsPerLine));
+        return lines;
+      }
+    }
+
+    if (current) lines.push(current);
+    return lines.slice(0, maxLines);
   }
 
   function parseNumber(value) {
