@@ -753,9 +753,12 @@
     const mode = readChartMode();
 
     const lessonWidth = 86;
-    const width = Math.max(620, 78 + Math.max(0, model.rows.length - 1) * lessonWidth);
-    const height = 430;
-    const margin = { top: 18, right: 20, bottom: 90, left: 58 };
+    const maxLabelLength = model.rows.reduce((acc, item) => Math.max(acc, String(item.title || "").length), 0);
+    const bottomMargin = clamp(120 + maxLabelLength * 3, 140, 280);
+    const margin = { top: 18, right: 64, bottom: bottomMargin, left: 64 };
+    const innerHeightTarget = 300;
+    const height = margin.top + innerHeightTarget + margin.bottom;
+    const width = Math.max(680, margin.left + margin.right + Math.max(1, model.rows.length) * lessonWidth);
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -802,8 +805,9 @@
       })()
       : "";
 
+    const labelBaseY = margin.top + innerHeight + 10;
     const labels = model.rows.map((lesson, idx) => `
-      <text x="${x(idx)}" y="${height - 28}" transform="rotate(-28 ${x(idx)} ${height - 28})" font-size="12" fill="#5f6780">${escapeHtml(trimLabel(lesson.title, 28))}</text>
+      <text x="${x(idx)}" y="${labelBaseY}" transform="rotate(90 ${x(idx)} ${labelBaseY})" text-anchor="start" font-size="10" fill="#5f6780">${escapeHtml(lesson.title)}</text>
     `).join("");
 
     const enteredMarkers = model.rows.map((lesson, idx) => `<circle cx="${x(idx)}" cy="${y(lesson.entered)}" r="4.5" fill="#2c63ff"></circle>`).join("");
@@ -938,6 +942,7 @@
 
   function roundUp(value, step) { return Math.ceil(value / step) * step; }
   function roundDown(value, step) { return Math.floor(value / step) * step; }
+  function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
 
   function indexOfHeader(headerColumns, title) {
     const hit = headerColumns.find((cell) => normalizeText(cell.text) === title);
