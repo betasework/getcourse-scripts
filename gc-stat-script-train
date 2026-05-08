@@ -805,7 +805,7 @@
       })()
       : "";
 
-    const labelBaseY = margin.top + innerHeight + 10;
+    const labelBaseY = height - 10;
     const labels = model.rows.map((lesson, idx) => {
       const lines = splitLabelLines(lesson.title, 20, 3);
       const textX = x(idx);
@@ -819,7 +819,7 @@
           x="${textX}"
           y="${textY}"
           transform="rotate(-90 ${textX} ${textY})"
-          text-anchor="start"
+          text-anchor="end"
           font-size="11"
           fill="#5f6780"
         >${lineSpans}</text>
