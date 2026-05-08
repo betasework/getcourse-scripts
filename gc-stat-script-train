@@ -8,6 +8,7 @@
   const STYLE_ID = `${APP_ID}-style`;
   const INTERNAL_TABLE_ID = `${APP_ID}-internal-table`;
   const STATE_KEY = "__gcStatUpgradeState";
+  const CHART_MODE_KEY = `${APP_ID}:chart-mode`;
 
   try {
     if (window[STATE_KEY] && typeof window[STATE_KEY].destroy === "function") {
@@ -231,6 +232,64 @@
       #${ROOT_ID} .legend{ display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:12px; }
       #${ROOT_ID} .legend span{ display:inline-flex; align-items:center; gap:6px; }
       #${ROOT_ID} .swatch{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+      #${ROOT_ID} .chart-actions{
+        display:flex;
+        gap:8px;
+        align-items:center;
+        flex-wrap:wrap;
+      }
+      #${ROOT_ID} .mode-switch{
+        display:inline-flex;
+        gap:4px;
+        padding:3px;
+        border-radius:999px;
+        background:rgba(17,34,79,.06);
+      }
+      #${ROOT_ID} .mode-btn{
+        border:0;
+        background:transparent;
+        color:var(--muted);
+        border-radius:999px;
+        padding:6px 10px;
+        font-size:12px;
+        cursor:pointer;
+      }
+      #${ROOT_ID} .mode-btn.is-active{
+        background:#fff;
+        color:var(--ink);
+        box-shadow:0 2px 12px rgba(17,34,79,.12);
+      }
+      #${ROOT_ID} .drop-highlights{
+        margin-top:8px;
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+      }
+      #${ROOT_ID} .drop-pill{
+        display:inline-flex;
+        align-items:center;
+        gap:6px;
+        border-radius:999px;
+        font-size:11px;
+        padding:4px 8px;
+        border:1px solid transparent;
+      }
+      #${ROOT_ID} .drop-pill.bad{
+        background:rgba(196,69,54,.1);
+        border-color:rgba(196,69,54,.18);
+        color:var(--rose);
+      }
+      #${ROOT_ID} .drop-pill.warn{
+        background:rgba(184,107,0,.11);
+        border-color:rgba(184,107,0,.18);
+        color:var(--amber);
+      }
+      #${ROOT_ID} .drop-pill .lesson{
+        max-width:180px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
 
       #${ROOT_ID} .chart-wrap{
         border-radius:14px;
@@ -320,6 +379,7 @@
         #${ROOT_ID} .card-title { font-size:19px; }
         #${ROOT_ID} .card-subtitle { font-size:12px; }
         #${ROOT_ID} svg { min-width:640px; }
+        #${ROOT_ID} .chart-actions { width:100%; justify-content:space-between; }
       }
 
       @media (max-width:560px){
@@ -556,6 +616,8 @@
 
     const metricItems = buildMetricItems(model);
     const topInsights = buildTopInsights(model);
+    const topDrops = getTopDropTransitions(model, 3);
+    const activeMode = readChartMode();
 
     root.innerHTML = `
       <div class="page">
@@ -595,16 +657,23 @@
             <div class="card-head">
               <div>
                 <h2 class="card-title">Воронка уроков</h2>
-                <p class="card-subtitle">Подсветка отмечает переходы с наибольшей просадкой.</p>
+                <p class="card-subtitle">Режимы графика: линия, столбцы и комбо. Подсветка отмечает проблемные переходы.</p>
               </div>
-              <div>
+              <div class="chart-actions">
+                <div class="mode-switch" role="group" aria-label="Режим графика">
+                  ${renderModeButton("line", "Линия", activeMode)}
+                  ${renderModeButton("bar", "Столбцы", activeMode)}
+                  ${renderModeButton("combo", "Комбо", activeMode)}
+                </div>
                 <button type="button" class="btn" data-role="csv">Экспорт CSV</button>
               </div>
             </div>
             <div class="legend">
               <span><i class="swatch" style="background:var(--blue)"></i>Зашли</span>
               ${model.rows.some((r) => r.answered !== null) ? '<span><i class="swatch" style="background:var(--orange)"></i>Ответили</span>' : ""}
+              <span><i class="swatch" style="background:rgba(196,69,54,.5)"></i>Критичная просадка</span>
             </div>
+            ${topDrops.length ? `<div class="drop-highlights">${topDrops.map(renderDropPill).join("")}</div>` : ""}
             <div class="chart-wrap">
               <svg id="${APP_ID}-chart" viewBox="0 0 980 430" aria-label="Воронка уроков"></svg>
             </div>
@@ -633,6 +702,24 @@
         </section>
       </div>
     `;
+  }
+
+  function renderModeButton(mode, label, activeMode) {
+    const isActive = mode === activeMode;
+    return `<button type="button" class="mode-btn ${isActive ? "is-active" : ""}" data-role="chart-mode" data-mode="${mode}" aria-pressed="${isActive ? "true" : "false"}">${label}</button>`;
+  }
+
+  function readChartMode() {
+    try {
+      const mode = localStorage.getItem(CHART_MODE_KEY);
+      return ["line", "bar", "combo"].includes(mode) ? mode : "combo";
+    } catch (_) {
+      return "combo";
+    }
+  }
+
+  function writeChartMode(mode) {
+    try { localStorage.setItem(CHART_MODE_KEY, mode); } catch (_) {}
   }
 
   function buildMetricItems(model) {
@@ -696,6 +783,7 @@
   function renderChart(model) {
     const svg = document.getElementById(`${APP_ID}-chart`);
     if (!svg) return;
+    const mode = readChartMode();
 
     const width = 980;
     const height = 430;
@@ -752,14 +840,41 @@
 
     const enteredMarkers = model.rows.map((lesson, idx) => `<circle cx="${x(idx)}" cy="${y(lesson.entered)}" r="4.5" fill="#2c63ff"></circle>`).join("");
     const answeredMarkers = model.rows.map((lesson, idx) => lesson.answered === null ? "" : `<circle cx="${x(idx)}" cy="${y(lesson.answered)}" r="4.5" fill="#ff6a13"></circle>`).join("");
+    const barGroupWidth = Math.max(18, Math.min(56, stepX * 0.62));
+    const barWidth = model.rows.some((item) => item.answered !== null) ? barGroupWidth * 0.44 : barGroupWidth * 0.72;
+    const enteredBars = model.rows.map((lesson, idx) => {
+      const barX = x(idx) - barGroupWidth / 2;
+      const barY = y(lesson.entered);
+      const barHeight = margin.top + innerHeight - barY;
+      return `<rect x="${barX.toFixed(2)}" y="${barY.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${barHeight.toFixed(2)}" rx="5" fill="rgba(44,99,255,.65)"><title>${escapeHtml(lesson.title)}: зашли ${formatInt(lesson.entered)}</title></rect>`;
+    }).join("");
+    const answeredBars = model.rows.map((lesson, idx) => {
+      if (lesson.answered === null) return "";
+      const barX = x(idx) - barGroupWidth / 2 + barGroupWidth - barWidth;
+      const barY = y(lesson.answered);
+      const barHeight = margin.top + innerHeight - barY;
+      return `<rect x="${barX.toFixed(2)}" y="${barY.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${barHeight.toFixed(2)}" rx="5" fill="rgba(255,106,19,.7)"><title>${escapeHtml(lesson.title)}: ответили ${formatInt(lesson.answered)}</title></rect>`;
+    }).join("");
+    const topDrops = getTopDropTransitions(model, 3);
+    const dropLabels = topDrops.map((drop) => {
+      const centerX = x(drop.index) - stepX / 2;
+      const labelY = margin.top + 16 + (drop.rank - 1) * 16;
+      return `<text x="${centerX.toFixed(2)}" y="${labelY.toFixed(2)}" text-anchor="middle" font-size="11" fill="${drop.value <= -30 ? "#c44536" : "#b86b00"}">-${formatInt(Math.abs(drop.value))}</text>`;
+    }).join("");
+
+    const drawLine = mode === "line" || mode === "combo";
+    const drawBars = mode === "bar" || mode === "combo";
 
     svg.innerHTML = `
       ${gridLines}
       ${areas}
-      <path d="${pathFor("entered")}" fill="none" stroke="#2c63ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
-      ${model.rows.some((item) => item.answered !== null) ? `<path d="${pathFor("answered")}" fill="none" stroke="#ff6a13" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>` : ""}
-      ${enteredMarkers}
-      ${answeredMarkers}
+      ${drawBars ? enteredBars : ""}
+      ${drawBars ? answeredBars : ""}
+      ${drawLine ? `<path d="${pathFor("entered")}" fill="none" stroke="#2c63ff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>` : ""}
+      ${drawLine && model.rows.some((item) => item.answered !== null) ? `<path d="${pathFor("answered")}" fill="none" stroke="#ff6a13" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>` : ""}
+      ${drawLine ? enteredMarkers : ""}
+      ${drawLine ? answeredMarkers : ""}
+      ${dropLabels}
       ${labels}
     `;
   }
@@ -770,8 +885,20 @@
 
     root.addEventListener("click", (event) => {
       const btn = event.target.closest('button[data-role="csv"]');
-      if (!btn) return;
-      downloadCsv(root._model || model);
+      if (btn) {
+        downloadCsv(root._model || model);
+        return;
+      }
+
+      const modeBtn = event.target.closest('button[data-role="chart-mode"]');
+      if (!modeBtn) return;
+      const mode = modeBtn.dataset.mode;
+      if (!["line", "bar", "combo"].includes(mode)) return;
+      writeChartMode(mode);
+      const current = root._model || model;
+      renderRoot(state.initializedForTable, current);
+      renderChart(current);
+      bindRoot(current);
     });
 
     root.dataset.bound = "1";
@@ -814,6 +941,25 @@
   }
 
   function emptyMetric() { return { raw: "", value: null }; }
+
+  function getTopDropTransitions(model, limit) {
+    return model.rows
+      .map((row, index) => ({ ...row, index }))
+      .filter((row) => row.index > 0 && row.delta !== null && row.delta < 0)
+      .sort((a, b) => a.delta - b.delta)
+      .slice(0, limit)
+      .map((row, i) => ({
+        index: row.index,
+        value: row.delta,
+        rank: i + 1,
+        label: `${trimLabel(model.rows[row.index - 1].title, 18)} → ${trimLabel(row.title, 18)}`
+      }));
+  }
+
+  function renderDropPill(item) {
+    const className = item.value <= -30 ? "bad" : "warn";
+    return `<span class="drop-pill ${className}"><strong>TOP ${item.rank}</strong><span class="lesson">${escapeHtml(item.label)}</span><span>-${formatInt(Math.abs(item.value))}</span></span>`;
+  }
 
   function buildTicks(min, max, count) {
     if (max <= min) return [min];
